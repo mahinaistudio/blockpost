@@ -1,0 +1,2335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1" />
+<title>Blockpost Night League</title>
+<meta name="description" content="Blockpost Night League — single-file edition." />
+<meta property="og:title" content="Blockpost Night League" />
+<meta property="og:description" content="A shared match journal for Blockpost squads." />
+<meta property="og:type" content="website" />
+<link rel="icon" type="image/png" href="logo.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;500;600;700;800;900&family=DM+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<script src="https://apis.google.com/js/api.js" async defer></script>
+<style>
+:root {
+  --background: 42 38% 94%;
+  --foreground: 222 27% 15%;
+  --border: 35 19% 83%;
+  --input: 35 19% 78%;
+  --ring: 195 90% 42%;
+  --card: 42 45% 98%;
+  --card-foreground: 222 27% 15%;
+  --card-border: 37 25% 86%;
+  --popover: 42 45% 98%;
+  --popover-foreground: 222 27% 15%;
+  --primary: 195 91% 38%;
+  --primary-foreground: 42 45% 98%;
+  --secondary: 220 24% 19%;
+  --secondary-foreground: 42 45% 98%;
+  --muted: 38 25% 89%;
+  --muted-foreground: 220 11% 43%;
+  --accent: 40 96% 54%;
+  --accent-foreground: 222 27% 15%;
+  --destructive: 3 72% 46%;
+  --destructive-foreground: 42 45% 98%;
+  --sidebar: 221 30% 17%;
+  --sidebar-foreground: 210 20% 94%;
+  --sidebar-border: 220 24% 25%;
+  --sidebar-primary: 40 96% 54%;
+  --sidebar-primary-foreground: 222 27% 15%;
+  --app-font-sans: 'Space Grotesk', sans-serif;
+  --app-font-mono: 'DM Mono', monospace;
+  --shadow-card: 0 15px 36px rgba(25, 36, 50, .08);
+}
+.dark {
+  --background: 222 29% 10%;
+  --foreground: 40 28% 92%;
+  --border: 220 21% 24%;
+  --input: 220 21% 28%;
+  --ring: 193 86% 49%;
+  --card: 222 25% 14%;
+  --card-foreground: 40 28% 92%;
+  --card-border: 220 21% 24%;
+  --popover: 222 25% 14%;
+  --popover-foreground: 40 28% 92%;
+  --primary: 193 86% 49%;
+  --primary-foreground: 222 29% 10%;
+  --secondary: 220 23% 21%;
+  --secondary-foreground: 40 28% 92%;
+  --muted: 220 22% 19%;
+  --muted-foreground: 218 14% 67%;
+  --accent: 40 96% 54%;
+  --accent-foreground: 222 29% 10%;
+  --destructive: 3 72% 53%;
+  --destructive-foreground: 40 28% 92%;
+  --sidebar: 223 34% 8%;
+  --sidebar-foreground: 40 28% 92%;
+  --sidebar-border: 220 21% 19%;
+  --sidebar-primary: 40 96% 54%;
+  --sidebar-primary-foreground: 222 29% 10%;
+  --shadow-card: 0 15px 36px rgba(0, 0, 0, .22);
+}
+* { border-color: hsl(var(--border)); box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: var(--app-font-sans);
+  -webkit-font-smoothing: antialiased;
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  min-width: 320px;
+}
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+a { text-decoration: none; color: inherit; }
+button { font-family: inherit; }
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: .035;
+  z-index: 50;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 140 140' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+}
+.font-display { font-family: 'Barlow Condensed', sans-serif; }
+.font-mono-app { font-family: var(--app-font-mono); }
+.eyebrow {
+  font-family: var(--app-font-mono);
+  font-size: .68rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: hsl(var(--muted-foreground));
+}
+.display-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: -.035em;
+  text-transform: uppercase;
+  line-height: .92;
+}
+.app-shell { min-height: 100dvh; display: flex; background: hsl(var(--background)); }
+.panel {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--card-border));
+  border-radius: 1rem;
+  box-shadow: var(--shadow-card);
+}
+.tactical-grid {
+  background-image: linear-gradient(hsl(var(--border) / .36) 1px, transparent 1px), linear-gradient(90deg, hsl(var(--border) / .36) 1px, transparent 1px);
+  background-size: 25px 25px;
+}
+.btn-primary, .btn-secondary, .btn-ghost, .btn-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  min-height: 2.55rem;
+  padding: .65rem .9rem;
+  border-radius: .55rem;
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  transition: transform .18s ease, background-color .18s ease, border-color .18s ease, color .18s ease;
+  cursor: pointer;
+  border-width: 1px;
+  border-style: solid;
+  line-height: 1.2;
+}
+.btn-primary:hover, .btn-secondary:hover, .btn-ghost:hover, .btn-danger:hover { transform: translateY(-1px); }
+.btn-primary { background: hsl(var(--accent)); color: hsl(var(--accent-foreground)); border-color: hsl(var(--accent)); }
+.btn-primary:hover { background: hsl(40 96% 61%); }
+.btn-primary:disabled { opacity: .6; cursor: default; transform: none; }
+.btn-secondary { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--primary)); }
+.btn-secondary:hover { background: hsl(193 86% 45%); }
+.btn-ghost { background: transparent; color: hsl(var(--foreground)); border-color: hsl(var(--border)); }
+.btn-ghost:hover { border-color: hsl(var(--primary)); color: hsl(var(--primary)); background: hsl(var(--primary) / .06); }
+.btn-danger { background: transparent; color: hsl(var(--destructive)); border-color: hsl(var(--destructive) / .35); }
+.btn-danger:hover { background: hsl(var(--destructive) / .08); }
+.btn-icon { width: 2rem; height: 2rem; min-height: 2rem; padding: 0; }
+.btn-icon-sm { width: 1.75rem; height: 1.75rem; min-height: 1.75rem; padding: 0; }
+.field {
+  width: 100%;
+  border: 1px solid hsl(var(--input));
+  border-radius: .5rem;
+  background: hsl(var(--background) / .65);
+  color: hsl(var(--foreground));
+  padding: .65rem .75rem;
+  outline: none;
+  font-size: .84rem;
+  font-family: inherit;
+}
+.field:focus { border-color: hsl(var(--primary)); box-shadow: 0 0 0 3px hsl(var(--primary) / .14); }
+.field-label { display: block; margin-bottom: .38rem; font-size: .72rem; font-weight: 700; color: hsl(var(--muted-foreground)); }
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: .72rem;
+  border-radius: .55rem;
+  padding: .68rem .75rem;
+  color: hsl(var(--sidebar-foreground) / .66);
+  font-size: .78rem;
+  font-weight: 600;
+  transition: background-color .18s ease, color .18s ease, transform .18s ease;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  width: 100%;
+  text-align: left;
+}
+.nav-link:hover { color: hsl(var(--sidebar-foreground)); background: hsl(var(--sidebar-foreground) / .07); transform: translateX(2px); }
+.nav-link.active { color: hsl(var(--sidebar-primary)); background: hsl(var(--sidebar-primary) / .13); }
+.skeleton { background: linear-gradient(
+    90deg,
+    rgba(2, 6, 23, 0.92) 0%,
+    rgba(2, 6, 23, 0.80) 30%,
+    rgba(2, 6, 23, 0.55) 55%,
+    rgba(2, 6, 23, 0.30) 75%,
+    rgba(2, 6, 23, 0.15) 100%
+  ); background-size: 200% 100%; animation: shimmer 1.4s infinite; border-radius: .4rem; }
+.rise { animation: rise .45s ease both; }
+.delay-1 { animation-delay: .06s; }
+.delay-2 { animation-delay: .12s; }
+.delay-3 { animation-delay: .18s; }
+.delay-4 { animation-delay: .24s; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 40;
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  background: hsl(var(--sidebar));
+  padding: 1.25rem 1rem;
+  transform: translateX(-100%);
+  transition: transform .2s ease;
+}
+.sidebar.open { transform: translateX(0); }
+@media (min-width: 768px) { .sidebar { position: static; transform: none; } }
+.brand { display: flex; align-items: center; gap: .625rem; margin-bottom: 2rem; padding: 0 .25rem; }
+.brand img { height: 2.75rem; width: auto; border-radius: .5rem; }
+.brand .wordmark { font-family: 'Barlow Condensed', sans-serif; font-size: 1.25rem; font-weight: 900; text-transform: uppercase; line-height: 1; letter-spacing: -.025em; color: hsl(var(--sidebar-foreground)); }
+.brand .wordmark .accent { color: hsl(var(--sidebar-primary)); }
+.sidebar .eyebrow { padding: 0 .5rem; margin-bottom: .5rem; color: hsl(var(--sidebar-foreground) / .4); }
+.side-nav { display: flex; flex-direction: column; gap: .25rem; }
+.sidebar-bottom { margin-top: auto; display: flex; flex-direction: column; gap: .5rem; }
+.tonight-card {
+  border: 1px solid hsl(var(--sidebar-border));
+  border-radius: .75rem;
+  background: hsl(var(--sidebar-foreground) / .04);
+  padding: .75rem;
+}
+.tonight-card .round {
+  margin-top: .25rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: hsl(var(--sidebar-foreground));
+  line-height: 1.1;
+}
+.tonight-card .live { margin-top: .25rem; display: flex; align-items: center; gap: .5rem; font-size: .75rem; color: hsl(var(--sidebar-foreground) / .55); }
+.dot { display: inline-block; width: 6px; height: 6px; border-radius: 999px; flex: none; }
+.dot-emerald { background: #34d399; animation: blink 1.5s ease-in-out infinite; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+.dot-current { background: currentColor; }
+.menu-backdrop { position: fixed; inset: 0; z-index: 30; background: rgb(2 6 23 / .4); }
+@media (min-width: 768px) { .menu-backdrop { display: none; } }
+.main-col { min-width: 0; flex: 1; }
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 68px;
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--background) / .9);
+  padding: 0 1rem;
+  backdrop-filter: blur(8px);
+}
+@media (min-width: 768px) { .topbar { padding: 0 2rem; } }
+.crumb { display: none; }
+@media (min-width: 768px) { .crumb { display: block; } }
+.topbar .actions { margin-left: auto; display: flex; align-items: center; gap: .5rem; }
+.mode-badge {
+  display: none;
+  align-items: center;
+  gap: .5rem;
+  border-radius: 999px;
+  padding: .375rem .75rem;
+  font-size: .75rem;
+  font-weight: 600;
+}
+@media (min-width: 640px) { .mode-badge { display: inline-flex; } }
+.mode-badge.spectator { background: hsl(var(--primary) / .1); color: hsl(var(--primary)); }
+.mode-badge.admin { background: hsl(40 96% 54% / .1); color: #d97706; }
+.content { margin: 0 auto; max-width: 1420px; padding: 1.5rem 1rem; }
+@media (min-width: 768px) { .content { padding: 2rem; } }
+.page-head { margin-bottom: 1.75rem; display: flex; flex-direction: column; justify-content: space-between; gap: 1rem; }
+@media (min-width: 640px) { .page-head { flex-direction: row; align-items: flex-end; } }
+.page-head .eyebrow { margin-bottom: .5rem; }
+.page-head h1 { font-family: 'Barlow Condensed', sans-serif; font-weight: 700; font-size: 2.25rem; letter-spacing: -.035em; text-transform: uppercase; line-height: .92; margin: 0; }
+@media (min-width: 768px) { .page-head h1 { font-size: 3.75rem; } }
+.page-head .desc { margin-top: .75rem; max-width: 36rem; font-size: .875rem; color: hsl(var(--muted-foreground)); line-height: 1.6; }
+.flex { display: flex; }
+.block { display: block; }
+.flex-col { flex-direction: column; }
+.flex-1 { flex: 1; }
+.flex-wrap { flex-wrap: wrap; }
+.items-center { align-items: center; }
+.items-start { align-items: flex-start; }
+.items-end { align-items: flex-end; }
+.justify-between { justify-content: space-between; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.gap-2 { gap: .5rem; }
+.gap-2\.5 { gap: .625rem; }
+.gap-1 { gap: .25rem; }
+.gap-3 { gap: .75rem; }
+.gap-4 { gap: 1rem; }
+.gap-5 { gap: 1.25rem; }
+.gap-8 { gap: 2rem; }
+.gap-12 { gap: 3rem; }
+.mt-1 { margin-top: .25rem; }
+.mt-0\.5 { margin-top: .125rem; }
+.mt-2 { margin-top: .5rem; }
+.mt-3 { margin-top: .75rem; }
+.mt-4 { margin-top: 1rem; }
+.mt-5 { margin-top: 1.25rem; }
+.mt-6 { margin-top: 1.5rem; }
+.mt-7 { margin-top: 1.75rem; }
+.mt-8 { margin-top: 2rem; }
+.mt-9 { margin-top: 2.25rem; }
+.mt-10 { margin-top: 2.5rem; }
+.mb-2 { margin-bottom: .5rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mb-5 { margin-bottom: 1.25rem; }
+.mb-7 { margin-bottom: 1.75rem; }
+.mb-8 { margin-bottom: 2rem; }
+.ml-auto { margin-left: auto; }
+.mx-auto { margin-left: auto; margin-right: auto; }
+.mx-1 { margin-left: .25rem; margin-right: .25rem; }
+.pl-5 { padding-left: 1.25rem; }
+.p-2 { padding: .5rem; }
+.p-0 { padding: 0; }
+.p-3 { padding: .75rem; }
+.p-4 { padding: 1rem; }
+.p-5 { padding: 1.25rem; }
+.p-6 { padding: 1.5rem; }
+.p-7 { padding: 1.75rem; }
+.p-12 { padding: 3rem; }
+.px-2 { padding-left: .5rem; padding-right: .5rem; }
+.px-3 { padding-left: .75rem; padding-right: .75rem; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; }
+.px-5 { padding-left: 1.25rem; padding-right: 1.25rem; }
+.px-6 { padding-left: 1.5rem; padding-right: 1.5rem; }
+.py-3 { padding-top: .75rem; padding-bottom: .75rem; }
+.py-4 { padding-top: 1rem; padding-bottom: 1rem; }
+.py-5 { padding-top: 1.25rem; padding-bottom: 1.25rem; }
+.py-16 { padding-top: 4rem; padding-bottom: 4rem; }
+.pt-4 { padding-top: 1rem; }
+.pt-5 { padding-top: 1.25rem; }
+.text-xs { font-size: .75rem; }
+.text-sm { font-size: .875rem; }
+.text-base { font-size: 1rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.text-2xl { font-size: 1.5rem; }
+.text-3xl { font-size: 1.875rem; }
+.text-5xl { font-size: 3rem; }
+.text-6xl { font-size: 3.75rem; }
+.text-7xl { font-size: 4.5rem; }
+.text-8xl { font-size: 6rem; }
+.tiny { font-size: 9px; }
+.micro { font-size: 10px; }
+.mini { font-size: 11px; }
+.font-bold { font-weight: 700; }
+.font-black { font-weight: 900; }
+.font-semibold { font-weight: 600; }
+.uppercase { text-transform: uppercase; }
+.capitalize { text-transform: capitalize; }
+.truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.leading-7 { line-height: 1.75rem; }
+.leading-none { line-height: 1; }
+.tracking-tight { letter-spacing: -.025em; }
+.tracking-wider { letter-spacing: .05em; }
+.tracking-widest { letter-spacing: .1em; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+.whitespace-pre-wrap { white-space: pre-wrap; }
+.text-primary { color: hsl(var(--primary)); }
+.text-accent-foreground { color: hsl(var(--accent-foreground)); }
+.text-muted-foreground { color: hsl(var(--muted-foreground)); }
+.text-foreground { color: hsl(var(--foreground)); }
+.text-slate-950 { color: #020617; }
+.text-amber-600 { color: #d97706; }
+.text-amber-700 { color: #b45309; }
+.text-violet-700 { color: #6d28d9; }
+.text-emerald-600 { color: #059669; }
+.text-destructive { color: hsl(var(--destructive)); }
+.text-sidebar-primary { color: hsl(var(--sidebar-primary)); }
+.text-sidebar-foreground { color: hsl(var(--sidebar-foreground)); }
+.bg-background { background: hsl(var(--background)); }
+.bg-sidebar { background: hsl(var(--sidebar)); }
+.bg-card { background: hsl(var(--card)); }
+.bg-muted { background: hsl(var(--muted)); }
+.bg-primary { background: hsl(var(--primary)); }
+.bg-accent { background: hsl(var(--accent)); }
+.bg-emerald-400 { background: #34d399; }
+.bg-emerald-500 { background: #10b981; }
+.bg-current { background: currentColor; }
+.bg-amber-10 { background: hsl(37 96% 56% / .1); }
+.bg-amber-15 { background: hsl(37 96% 56% / .15); }
+.bg-violet-15 { background: hsl(262 84% 63% / .15); }
+.bg-primary-5 { background: hsl(var(--primary) / .05); }
+.bg-primary-10 { background: hsl(var(--primary) / .1); }
+.bg-primary-15 { background: hsl(var(--primary) / .15); }
+.bg-accent-10 { background: hsl(var(--accent) / .1); }
+.bg-accent-15 { background: hsl(var(--accent) / .15); }
+.bg-accent-20 { background: hsl(var(--accent) / .2); }
+.bg-muted-40 { background: hsl(var(--muted) / .4); }
+.bg-destructive-10 { background: hsl(var(--destructive) / .1); }
+.bg-slate-40 { background: rgb(2 6 23 / .4); }
+.bg-slate-50 { background: rgb(2 6 23 / .5); }
+.bg-violet-400 { background: #a78bfa; }
+.border-b { border-bottom: 1px solid hsl(var(--border)); }
+.border { border: 1px solid hsl(var(--border)); }
+.border-t { border-top: 1px solid hsl(var(--border)); }
+.border-l-2 { border-left-width: 2px; border-left-style: solid; }
+.border-l-accent { border-left-color: hsl(var(--accent)); }
+.border-accent { border-color: hsl(var(--accent)); }
+.border-primary { border-color: hsl(var(--primary)); }
+.border-primary-20 { border-color: hsl(var(--primary) / .2); }
+.border-primary-25 { border-color: hsl(var(--primary) / .25); }
+.border-accent-35 { border-color: hsl(var(--accent) / .35); }
+.border-sidebar-border { border-color: hsl(var(--sidebar-border)); }
+.border-amber-30 { border-color: hsl(37 96% 56% / .3); }
+.corner-badge { position: absolute; right: 0; top: 0; width: 6rem; height: 6rem; border-bottom-left-radius: 999px; }
+.corner-badge.alt { background: hsl(var(--accent) / .1); }
+.corner-badge.main { background: hsl(var(--primary) / .1); }
+.relative { position: relative; }
+.absolute { position: absolute; }
+.fixed { position: fixed; }
+.sticky { position: sticky; }
+.inset-0 { inset: 0; }
+.overflow-hidden { overflow: hidden; }
+.object-cover { object-fit: cover; }
+.aspect-square { aspect-ratio: 1 / 1; }
+.rotate-2 { transform: rotate(2deg); }
+.blur-3xl { filter: blur(64px); }
+.shadow-2xl { box-shadow: 0 25px 50px -12px rgb(0 0 0 / .25); }
+.backdrop-blur { backdrop-filter: blur(8px); }
+.rounded-sm { border-radius: .125rem; }
+.rounded-md { border-radius: .375rem; }
+.rounded-lg { border-radius: .5rem; }
+.rounded-xl { border-radius: .75rem; }
+.rounded-2xl { border-radius: 1rem; }
+.rounded-full { border-radius: 999px; }
+.rounded-t-md { border-top-left-radius: .375rem; border-top-right-radius: .375rem; }
+.rounded-t-2xl { border-top-left-radius: 1rem; border-top-right-radius: 1rem; }
+.w-full { width: 100%; }
+.w-11 { width: 2.75rem; }
+.w-7 { width: 1.75rem; }
+.w-8 { width: 2rem; }
+.w-9 { width: 2.25rem; }
+.w-20 { width: 5rem; }
+.w-24 { width: 6rem; }
+.w-40 { width: 10rem; }
+.h-7 { height: 1.75rem; }
+.h-8 { height: 2rem; }
+.h-9 { height: 2.25rem; }
+.h-10 { height: 2.5rem; }
+.h-11 { height: 2.75rem; }
+.h-14 { height: 3.5rem; }
+.h-24 { height: 6rem; }
+.h-40 { height: 10rem; }
+.h-48 { height: 12rem; }
+.min-h-8 { min-height: 2rem; }
+.min-h-9 { min-height: 2.25rem; }
+.min-h-28 { min-height: 7rem; }
+.min-h-360 { min-height: 360px; }
+.min-w-0 { min-width: 0; }
+.shrink-0 { flex: none; }
+.max-w-lg { max-width: 32rem; }
+.max-w-xl { max-width: 36rem; }
+.max-w-3xl { max-width: 48rem; }
+.max-w-7xl { max-width: 80rem; }
+.max-w-440 { max-width: 440px; }
+.grid { display: grid; }
+.grid-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.last-border-0 { border-bottom-width: 0; }
+.hover-row:hover { background: hsl(var(--muted) / .4); }
+.transition-colors { transition: background-color .18s ease; }
+.cursor-pointer { cursor: pointer; }
+.outline-none { outline: none; }
+.resize-y { resize: vertical; }
+.bg-transparent { background: transparent; }
+.opacity-20 { opacity: .2; }
+.badge-pill { display: inline-flex; align-items: center; gap: .5rem; border-radius: 999px; padding: .375rem .75rem; font-size: .75rem; }
+.badge-pill.live { border: 1px solid hsl(var(--sidebar-primary) / .3); background: hsl(var(--sidebar-primary) / .1); color: hsl(var(--sidebar-primary)); }
+.hl-row { animation: hlFlash 1.2s ease; }
+@keyframes hlFlash { 0% { background: hsl(var(--primary) / .18); } 100% { background: transparent; } }
+.stat-row { border-top: 1px solid hsl(var(--border)); padding: .75rem 0; display: flex; align-items: center; gap: .75rem; }
+.stat-row:first-child { border-top: 0; }
+.avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  border-radius: .5rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  color: #020617;
+}
+.avatar.sm { height: 1.75rem; width: 1.75rem; font-size: 10px; }
+.avatar.md { height: 2.25rem; width: 2.25rem; font-size: 12px; }
+.avatar.lg { height: 3.5rem; width: 3.5rem; font-size: 1.125rem; }
+.match-badge { display: inline-block; border-radius: .375rem; padding: .25rem .5rem; font-family: var(--app-font-mono); font-size: 10px; text-transform: uppercase; }
+.match-badge.knife { background: hsl(37 96% 56% / .15); color: #b45309; }
+.match-badge.sniper { background: hsl(262 84% 63% / .15); color: #6d28d9; }
+.match-badge.gun { background: hsl(var(--primary) / .15); color: hsl(var(--primary)); }
+.chart { margin-top: 2rem; height: 12rem; display: flex; align-items: flex-end; gap: .5rem; }
+@media (min-width: 768px) { .chart { gap: 1rem; } }
+.chart .col { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; gap: .5rem; }
+.chart .bar-wrap { position: relative; width: 100%; }
+.chart .bar { position: absolute; inset: 0; border-radius: .375rem .375rem 0 0; background: hsl(var(--primary)); transition: background-color .18s ease; }
+.chart .col:hover .bar { background: hsl(var(--accent)); }
+.chart .tip { position: absolute; top: -1.5rem; left: 50%; transform: translateX(-50%); display: none; font-family: var(--app-font-mono); font-size: 10px; }
+.chart .col:hover .tip { display: block; }
+.chart .label { font-family: var(--app-font-mono); font-size: 9px; color: hsl(var(--muted-foreground)); }
+.dash-stats { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .dash-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .dash-stats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.dash-mid { display: grid; gap: 1.25rem; margin-top: 1.25rem; grid-template-columns: 1fr; }
+@media (min-width: 1280px) { .dash-mid { grid-template-columns: 1.4fr .8fr; } }
+.dash-low { display: grid; gap: 1.25rem; margin-top: 1.25rem; grid-template-columns: 1fr; }
+@media (min-width: 1280px) { .dash-low { grid-template-columns: 1fr 1.3fr; } }
+.players-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .players-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.servers-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .servers-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1280px) { .servers-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.admin-grid { display: grid; gap: 1rem; grid-template-columns: 1fr; }
+@media (min-width: 640px) { .admin-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .admin-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.form-grid { display: grid; gap: 1.25rem; grid-template-columns: 1fr; }
+@media (min-width: 1280px) { .form-grid { grid-template-columns: 1fr 1.15fr; } }
+.tt-grid { display: grid; grid-template-columns: 70px 1fr 1.4fr; }
+.matchlist-head, .matchlist-row { display: grid; grid-template-columns: 110px 90px 1fr 150px 80px; gap: 1rem; align-items: center; }
+@media (max-width: 767px) {
+  .matchlist-head { display: none; }
+  .matchlist-row { grid-template-columns: 1fr; gap: .75rem; }
+}
+.match-grid { display: grid; gap: 1rem; }
+.home-grid { display: grid; grid-template-columns: 1fr; gap: 3rem; align-items: center; justify-items: center; text-align: center; flex: 1; padding: 4rem 0; }
+@media (min-width: 768px) { .home-grid { grid-template-columns: 1fr; padding: 5rem 0; } }
+.mobile-only { display: inline-flex; }
+@media (min-width: 768px) { .mobile-only { display: none; } }
+.home-page { min-height: 100dvh; overflow: hidden; background: hsl(var(--sidebar)); color: hsl(var(--sidebar-foreground)); }
+.home-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: url('bg.png') center/cover no-repeat;
+  opacity: 1;
+}
+.home-page::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  background: rgba(2, 6, 23, 0.70);
+}
+.home-inner { position: relative; z-index: 2; margin: 0 auto; min-height: 100dvh; max-width: 80rem; display: flex; flex-direction: column; padding: 1.5rem 1.25rem; }
+@media (min-width: 768px) { .home-inner { padding: 1.5rem 2.5rem; } }
+.home-hero h1 { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; letter-spacing: -.035em; text-transform: uppercase; line-height: .92; font-size: 4.5rem; margin: 0; }
+@media (min-width: 640px) { .home-hero h1 { font-size: 6rem; } }
+@media (min-width: 768px) { .home-hero h1 { font-size: 10rem; } }
+@media (max-width: 640px) {
+  .home-topbar { display: flex; flex-direction: row; align-items: flex-start; justify-content: space-between; }
+  .home-topbar a { flex-direction: column; align-items: center; gap: .25rem; text-align: center; }
+  .home-topbar .live-badge { font-size: .65rem; padding: .3rem .6rem; margin-top: 0; }
+  .home-topbar .live-badge .live-full { display: none !important; }
+  .home-topbar .live-badge .live-short { display: inline !important; }
+  .home-footer { flex-direction: row; flex-wrap: wrap; gap: .5rem !important; padding-left: 0 !important; padding-right: 0 !important; justify-content: center !important; }
+  .home-footer span { flex: 1 1 auto; text-align: center; padding: .4rem .5rem; }
+}
+.modal-backdrop { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; justify-content: center; background: rgb(2 6 23 / .5); padding: 0; }
+@media (min-width: 640px) { .modal-backdrop { align-items: center; padding: 1rem; } }
+.modal-card { width: 100%; max-width: 32rem; border-radius: 1rem 1rem 0 0; background: hsl(var(--card)); padding: 1.5rem; box-shadow: 0 25px 50px -12px rgb(0 0 0 / .25); }
+@media (min-width: 640px) { .modal-card { border-radius: 1rem; } }
+.big-scores { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-top: 1.5rem; }
+.score-box { border-radius: .75rem; padding: 1rem; }
+.score-box.alpha { border: 1px solid hsl(var(--primary) / .25); background: hsl(var(--primary) / .05); }
+.score-box.bravo { border: 1px solid hsl(var(--accent) / .35); background: hsl(var(--accent) / .1); }
+.score-box .eyebrow.alpha-tone { color: hsl(var(--primary)); }
+.score-box .eyebrow.bravo-tone { color: #b45309; }
+.score-input { margin-top: .5rem; width: 100%; background: transparent; border: 0; outline: none; font-family: 'Barlow Condensed', sans-serif; font-size: 3rem; font-weight: 700; color: inherit; }
+.kd-input { width: 5rem; height: 2.25rem; padding: 0 .5rem; text-align: center; }
+.footer-strip { display: flex; flex-wrap: wrap; gap: 2rem; border-top: 1px solid hsl(var(--sidebar-foreground) / .1); padding-top: 1.25rem; font-size: .75rem; color: hsl(var(--sidebar-foreground) / .45); }
+.footer-strip .right { margin-left: auto; }
+@media (min-width: 640px) { .sm-row { flex-direction: row; } }
+
+/* Custom Alert/Confirm Modal */
+.custom-modal-backdrop {
+  position: fixed; inset: 0; z-index: 100;
+  display: flex; align-items: center; justify-content: center;
+  background: rgb(2 6 23 / .6); padding: 1rem;
+  animation: modalFadeIn .2s ease;
+}
+@keyframes modalFadeIn { from { opacity: 0; } to { opacity: 1; } }
+.custom-modal {
+  width: 100%; max-width: 24rem;
+  background: hsl(var(--card)); border: 1px solid hsl(var(--card-border));
+  border-radius: 1rem; padding: 1.75rem;
+  box-shadow: 0 25px 60px -12px rgb(0 0 0 / .35);
+  animation: modalSlideUp .25s ease;
+}
+@keyframes modalSlideUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+.custom-modal .modal-icon {
+  width: 2.75rem; height: 2.75rem; border-radius: .75rem;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 1rem;
+}
+.custom-modal .modal-icon.info { background: hsl(var(--primary) / .1); color: hsl(var(--primary)); }
+.custom-modal .modal-icon.warn { background: hsl(var(--accent) / .15); color: #d97706; }
+.custom-modal .modal-icon.danger { background: hsl(var(--destructive) / .1); color: hsl(var(--destructive)); }
+.custom-modal h3 {
+  font-family: 'Barlow Condensed', sans-serif; font-size: 1.375rem;
+  font-weight: 700; text-transform: uppercase; letter-spacing: -.02em;
+  margin: 0 0 .5rem; color: hsl(var(--foreground));
+}
+.custom-modal p {
+  font-size: .875rem; line-height: 1.6; margin: 0 0 1.25rem;
+  color: hsl(var(--muted-foreground));
+}
+.custom-modal .modal-actions {
+  display: flex; justify-content: flex-end; gap: .5rem;
+}
+
+/* Custom Select Dropdown */
+.custom-select-wrap { position: relative; width: 100%; }
+.custom-select-trigger {
+  width: 100%; border: 1px solid hsl(var(--input)); border-radius: .5rem;
+  background: hsl(var(--background) / .65); color: hsl(var(--foreground));
+  padding: .65rem .75rem; padding-right: 2.25rem;
+  font-size: .84rem; font-family: inherit; text-align: left;
+  cursor: pointer; outline: none; transition: border-color .18s ease, box-shadow .18s ease;
+  display: flex; align-items: center; gap: .5rem;
+}
+.custom-select-trigger:hover { border-color: hsl(var(--primary) / .5); }
+.custom-select-trigger:focus { border-color: hsl(var(--primary)); box-shadow: 0 0 0 3px hsl(var(--primary) / .14); }
+.custom-select-trigger .select-chevron {
+  position: absolute; right: .75rem; top: 50%; transform: translateY(-50%);
+  pointer-events: none; color: hsl(var(--muted-foreground)); transition: transform .2s ease;
+}
+.custom-select-wrap.open .custom-select-trigger .select-chevron { transform: translateY(-50%) rotate(180deg); }
+.custom-select-trigger .placeholder { color: hsl(var(--muted-foreground)); }
+.custom-select-dropdown {
+  position: absolute; left: 0; right: 0; top: calc(100% + 4px);
+  z-index: 60; background: hsl(var(--card)); border: 1px solid hsl(var(--card-border));
+  border-radius: .5rem; padding: .25rem;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, .18);
+  animation: dropdownOpen .15s ease;
+  max-height: 12rem; overflow-y: auto;
+}
+@keyframes dropdownOpen { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: translateY(0); } }
+.custom-select-option {
+  display: flex; align-items: center; gap: .5rem;
+  padding: .55rem .65rem; border-radius: .375rem;
+  font-size: .84rem; cursor: pointer; transition: background .12s ease;
+  color: hsl(var(--foreground)); border: 0; background: transparent;
+  width: 100%; text-align: left; font-family: inherit;
+}
+.custom-select-option:hover { background: hsl(var(--muted) / .5); }
+.custom-select-option.selected { background: hsl(var(--primary) / .1); color: hsl(var(--primary)); font-weight: 600; }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function () {
+"use strict";
+
+var THEME_KEY = "blockpost-theme";
+var ROLE_KEY = "blockpost-role";
+var DATA_KEY = "bpnl-data-v2";
+var LOGO = "logo.png";
+
+var state = {
+  dark: localStorage.getItem(THEME_KEY) === "dark",
+  role: localStorage.getItem(ROLE_KEY) === "admin" ? "admin" : "spectator",
+  menuOpen: false
+};
+
+var samplePlayers = [
+  { id: 1, realName: "Mika R.", universalName: "M1KA", team: "alpha", serverNames: { blockpost: "PLAYER_20140701" }, universalPartnerId: 3, avatarColor: "#19b7d9" },
+  { id: 2, realName: "Owen K.", universalName: "KOBALT", team: "alpha", serverNames: { blockpost: "PLAYER_29162989" }, universalPartnerId: 4, avatarColor: "#f6b51c" },
+  { id: 3, realName: "Lea V.", universalName: "VANTA", team: "bravo", serverNames: { blockpost: "PLAYER_29249041" }, universalPartnerId: 1, avatarColor: "#d77c3a" },
+  { id: 4, realName: "Tomas H.", universalName: "HATCH", team: "bravo", serverNames: { blockpost: "PLAYER_29248949" }, universalPartnerId: 2, avatarColor: "#8e9cff" }
+];
+
+var sampleMatches = [
+  { id: 1, playedOn: "2026-08-07", matchType: "gun", server: "EU // NIGHT-01", alphaScore: 9, bravoScore: 14, note: "Clean finish on the last push.", players: [
+    { playerId: 1, playerName: "M1KA", team: "alpha", kills: 5, deaths: 7, kd: 0.71 },
+    { playerId: 2, playerName: "KOBALT", team: "alpha", kills: 4, deaths: 7, kd: 0.57 },
+    { playerId: 3, playerName: "VANTA", team: "bravo", kills: 7, deaths: 7, kd: 1 },
+    { playerId: 4, playerName: "HATCH", team: "bravo", kills: 7, deaths: 2, kd: 3.5 }
+  ] },
+  { id: 2, playedOn: "2026-08-06", matchType: "knife", server: "EU // NIGHT-01", alphaScore: 15, bravoScore: 12, note: "Alpha held the center.", players: [] },
+  { id: 3, playedOn: "2026-08-05", matchType: "sniper", server: "EU // NIGHT-02", alphaScore: 11, bravoScore: 15, note: null, players: [] }
+];
+
+var sampleSummary = {
+  totalMatches: 28,
+  totalKills: 412,
+  totalDeaths: 389,
+  averageKills: 14.7,
+  teamSummaries: [
+    { team: "alpha", matches: 28, wins: 13, losses: 15, points: 47, winRate: 46.4 },
+    { team: "bravo", matches: 28, wins: 15, losses: 13, points: 53, winRate: 53.6 }
+  ],
+  playerSummaries: [
+    { playerId: 1, playerName: "M1KA", matches: 23, kills: 87, deaths: 91, kd: 0.96, winRate: 43.5, team: "alpha" },
+    { playerId: 2, playerName: "KOBALT", matches: 21, kills: 102, deaths: 78, kd: 1.31, winRate: 57.1, team: "alpha" },
+    { playerId: 3, playerName: "VANTA", matches: 24, kills: 94, deaths: 86, kd: 1.09, winRate: 54.2, team: "bravo" },
+    { playerId: 4, playerName: "HATCH", matches: 27, kills: 129, deaths: 92, kd: 1.4, winRate: 59.3, team: "bravo" }
+  ],
+  recentMatches: sampleMatches,
+  dailyTrend: [
+    { date: "08/01", matches: 2, kills: 31 },
+    { date: "08/02", matches: 4, kills: 63 },
+    { date: "08/03", matches: 3, kills: 45 },
+    { date: "08/04", matches: 5, kills: 74 },
+    { date: "08/05", matches: 4, kills: 59 },
+    { date: "08/06", matches: 5, kills: 68 },
+    { date: "08/07", matches: 5, kills: 72 }
+  ]
+};
+
+var defaultAgreement = {
+  title: "The night league agreement",
+  body: "We show up, we play the scheduled rounds, and we leave the lobby better than we found it.",
+  updatedAt: null
+};
+
+var serverList = [
+  { name: "igre.games", region: "Blockpost web · primary launch", status: "Open", url: "https://igre.games/en/blockpost/play/" },
+  { name: "nargames.com", region: "Blockpost web · alternate", status: "Open", url: "https://nargames.com/game/blockpost" },
+  { name: "Poki", region: "Blockpost web · quick play", status: "Open", url: "https://poki.com/en/g/blockpost" },
+  { name: "HotGames", region: "Blockpost web · alternate", status: "Open", url: "https://hotgames.io/blockpost" },
+  { name: "Nite Games", region: "Blockpost web · alternate", status: "Open", url: "https://nite.games/game/blockpost" },
+  { name: "KBH Games", region: "Blockpost web · alternate", status: "Open", url: "https://kbhgames.com/game/block-post-online" },
+  { name: "StartGamer", region: "Blockpost web · alternate", status: "Open", url: "https://startgamer.net/game/29681" }
+];
+
+var timetableRows = [
+  { mode: "Knife", count: "01", tone: "amber", note: "Warm-up. Keep it clean." },
+  { mode: "Knife", count: "02", tone: "amber", note: "No excuses in close quarters." },
+  { mode: "Gun", count: "03", tone: "cyan", note: "Main event begins." },
+  { mode: "Gun", count: "04", tone: "cyan", note: "Switch server if needed." },
+  { mode: "Sniper", count: "05", tone: "violet", note: "Hold your angles." },
+  { mode: "Sniper", count: "06", tone: "violet", note: "Last round. Leave a mark." }
+];
+
+function deepClone(obj) {
+  return JSON.parse(JSON.stringify(obj));
+}
+
+function loadData() {
+  var raw = null;
+  try { raw = localStorage.getItem(DATA_KEY); } catch (e) {}
+  if (raw) {
+    try {
+      var parsed = JSON.parse(raw);
+      if (parsed && parsed.players && parsed.matches && parsed.agreement) return parsed;
+    } catch (e) {}
+  }
+  return {
+    players: deepClone(samplePlayers),
+    matches: deepClone(sampleMatches),
+    agreement: deepClone(defaultAgreement)
+  };
+}
+
+var data = loadData();
+
+function saveData() {
+  try { localStorage.setItem(DATA_KEY, JSON.stringify(data)); } catch (e) {}
+  driveSchedulePush();
+}
+
+var DRIVE_CLIENT_ID = "294127365372-ek508nb2eccj1dpksl9lgnh84q8q3rag.apps.googleusercontent.com";
+var DRIVE_API_KEY = "AIzaSyC7fL3tbWi1Ugsyr8zM2lQ6I_2zJ5YqygA";
+var DRIVE_FILE_NAME = "blockpost-db.json";
+var DRIVE_SCOPE = "https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile";
+var PUBLIC_FILE_ID = "12oq0TdIqeoBGSr6Immiw0ERKlSqVKiv8";
+var ALLOWED_ADMINS = ["team.gaming3436@gmail.com"];
+
+var driveState = {
+  token: "",
+  fileId: "",
+  connected: false,
+  syncing: false,
+  lastSync: null,
+  lastError: "",
+  tokenClient: null,
+  pushTimer: null
+};
+
+function driveGetFileId() {
+  if (PUBLIC_FILE_ID) return PUBLIC_FILE_ID;
+  if (driveState.fileId) return driveState.fileId;
+  try {
+    driveState.fileId = localStorage.getItem("bpnl-drive-fileid") || "";
+  } catch (e) {
+    driveState.fileId = "";
+  }
+  return driveState.fileId;
+}
+
+function driveSetFileId(id) {
+  driveState.fileId = id;
+  try { localStorage.setItem("bpnl-drive-fileid", id); } catch (e) {}
+}
+
+function driveDisconnect() {
+  driveState.token = "";
+  driveState.connected = false;
+  driveState.lastError = "";
+  driveState.lastSync = null;
+  try {
+    localStorage.removeItem("bpnl-drive-token");
+    localStorage.removeItem("bpnl-drive-token-exp");
+  } catch (e) {}
+  driveRefreshUi();
+}
+
+function driveGetToken() {
+  if (driveState.token) return driveState.token;
+  var t = null;
+  var e = 0;
+  try {
+    t = localStorage.getItem("bpnl-drive-token");
+    e = Number(localStorage.getItem("bpnl-drive-token-exp") || 0);
+  } catch (err) {}
+  if (t && e > Date.now()) {
+    driveState.token = t;
+    return t;
+  }
+  return "";
+}
+
+function driveSaveToken(tok, expIn) {
+  driveState.token = tok;
+  try {
+    localStorage.setItem("bpnl-drive-token", tok);
+    localStorage.setItem("bpnl-drive-token-exp", String(Date.now() + (expIn || 3600) * 1000));
+  } catch (e) {}
+}
+
+function driveCreateFile(token) {
+  var boundary = "bpnl_bnd_" + Date.now();
+  var payload = "--" + boundary + "\r\n" +
+    "Content-Type: application/json; charset=UTF-8\r\n\r\n" +
+    JSON.stringify({ name: DRIVE_FILE_NAME, mimeType: "application/json" }) + "\r\n" +
+    "--" + boundary + "\r\n" +
+    "Content-Type: application/json\r\n\r\n" +
+    JSON.stringify(data) + "\r\n" +
+    "--" + boundary + "--";
+  return fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "multipart/related; boundary=" + boundary },
+    body: payload
+  }).then(function (r) {
+    if (!r.ok) throw new Error("create failed " + r.status);
+    return r.json();
+  }).then(function (j) { return j.id; });
+}
+
+function driveSharePublic(token, fileId) {
+  return fetch("https://www.googleapis.com/drive/v3/files/" + encodeURIComponent(fileId) + "/permissions?sendNotificationEmail=false", {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify({ role: "reader", type: "anyone" })
+  }).then(function (r) {
+    if (!r.ok) throw new Error("share failed " + r.status);
+  });
+}
+
+function driveUpdateFile(token, fileId) {
+  return fetch("https://www.googleapis.com/upload/drive/v3/files/" + encodeURIComponent(fileId) + "?uploadType=media", {
+    method: "PATCH",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  }).then(function (r) {
+    if (!r.ok) throw new Error("save failed " + r.status);
+    return r.json();
+  });
+}
+
+function drivePush() {
+  var token = driveGetToken();
+  if (!token) {
+    driveState.lastError = "Reconnect Google Drive";
+    driveRefreshUi();
+    return Promise.resolve();
+  }
+  driveState.syncing = true;
+  data.lastUpdated = new Date().toISOString();
+  var fileId = driveGetFileId();
+  var op;
+  if (fileId) {
+    op = driveUpdateFile(token, fileId);
+  } else {
+    op = driveCreateFile(token).then(function (id) {
+      driveSetFileId(id);
+      return driveSharePublic(token, id);
+    });
+  }
+  return op.then(function () {
+    driveState.syncing = false;
+    driveState.connected = true;
+    driveState.lastSync = new Date().toISOString();
+    driveState.lastError = "";
+    driveRefreshUi();
+  }).catch(function (err) {
+    driveState.syncing = false;
+    driveState.lastError = (err && err.message) ? err.message : "drive error";
+    driveRefreshUi();
+  });
+}
+
+function driveSchedulePush() {
+  if (state.role !== "admin") return;
+  if (!driveGetToken() || !driveGetFileId()) return;
+  if (driveState.pushTimer) clearTimeout(driveState.pushTimer);
+  driveState.pushTimer = setTimeout(function () {
+    driveState.pushTimer = null;
+    drivePush();
+  }, 1200);
+}
+
+function drivePull() {
+  var fileId = driveGetFileId();
+  if (!fileId) return Promise.resolve(null);
+  if (window.gapi && gapi.client && gapi.client.drive) {
+    return gapi.client.drive.files.get({ fileId: fileId, alt: "media" })
+      .then(function (resp) { return resp.result; });
+  }
+  var url = "https://www.googleapis.com/drive/v3/files/" + encodeURIComponent(fileId) + "?alt=media&key=" + DRIVE_API_KEY;
+  return fetch(url)
+    .then(function (r) { if (!r.ok) throw new Error("http " + r.status); return r.json(); });
+}
+
+function driveMaybeAdopt(remote) {
+  if (!remote || !remote.lastUpdated) return false;
+  var local = data.lastUpdated ? String(data.lastUpdated) : "";
+  if (!local || String(remote.lastUpdated) > local) {
+    data = remote;
+    try { localStorage.setItem(DATA_KEY, JSON.stringify(data)); } catch (e) {}
+    return true;
+  }
+  return false;
+}
+
+function driveRefreshUi() {
+  renderForRoute();
+}
+
+function driveBoot() {
+  var fileId = driveGetFileId();
+  if (!fileId) return;
+  drivePull().then(function (remote) {
+    var adopted = remote && driveMaybeAdopt(remote);
+    if (adopted) {
+      driveState.lastSync = new Date().toISOString();
+      driveState.connected = true;
+    }
+    if (state.role === "admin" && driveGetToken()) {
+      var localTs = data.lastUpdated ? String(data.lastUpdated) : "";
+      var remoteTs = remote && remote.lastUpdated ? String(remote.lastUpdated) : "";
+      if (!remoteTs || localTs > remoteTs) {
+        drivePush();
+        return;
+      }
+    }
+    driveRefreshUi();
+  }).catch(function () {
+    driveRefreshUi();
+  });
+}
+
+function driveConnect() {
+  return new Promise(function (resolve, reject) {
+    if (!DRIVE_CLIENT_ID || DRIVE_CLIENT_ID.indexOf("YOUR_CLIENT_ID") === 0) {
+      customAlert("Drive sync is not configured yet. Open setup.md and paste your OAuth Client ID into index.html (DRIVE_CLIENT_ID).", "warn");
+      return reject();
+    }
+    if (!window.google || !google.accounts || !google.accounts.oauth2) {
+      customAlert("Google sign-in is still loading — try again in a second.", "info");
+      return reject();
+    }
+    function onToken(resp) {
+      if (resp && resp.access_token) {
+        gapi.client.setToken({ access_token: resp.access_token });
+        gapi.client.drive.about.get({ fields: "user" }).then(function (r) {
+          var email = (r.result.user && r.result.user.emailAddress) || "unknown";
+          var allowed = ALLOWED_ADMINS.map(function (e) { return e.toLowerCase(); });
+          if (allowed.indexOf(email.toLowerCase()) === -1) {
+            customAlert("Access denied. " + email + " is not an authorized admin.", "danger");
+            gapi.client.setToken(null);
+            driveState.lastError = "Access denied";
+            driveRefreshUi();
+            return reject();
+          }
+          driveSaveToken(resp.access_token, resp.expires_in || 3600);
+          driveState.connected = true;
+          driveState.lastError = "";
+          drivePush();
+          resolve();
+        }).catch(function () {
+          driveSaveToken(resp.access_token, resp.expires_in || 3600);
+          driveState.connected = true;
+          driveState.lastError = "";
+          drivePush();
+          resolve();
+        });
+      } else {
+        driveState.lastError = "Sign-in was cancelled.";
+        driveRefreshUi();
+        reject();
+      }
+    }
+    if (!driveState.tokenClient) {
+      driveState.tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: DRIVE_CLIENT_ID,
+        scope: DRIVE_SCOPE,
+        callback: onToken
+      });
+    }
+    driveState.tokenClient.requestAccessToken({ prompt: "consent" });
+  });
+}
+
+function fmtClock(iso) {
+  try {
+    return new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  } catch (e) { return ""; }
+}
+
+function driveCardHtml() {
+  var id = driveGetFileId();
+  var isAdmin = state.role === "admin";
+  if (!id) {
+    if (!isAdmin) return "";
+    return '<button class="nav-link" data-drive-connect>' +
+      icon("cloud", 16, 1.8) + "<span>Sync with Google Drive</span>" +
+      "</button>";
+  }
+  var sub = "";
+  if (driveState.syncing) sub = "Syncing…";
+  else if (driveState.lastError || !driveGetToken()) sub = "Reconnect needed";
+  else if (driveState.lastSync) sub = "Synced " + fmtClock(driveState.lastSync);
+  else sub = "Live board";
+  var dot = (driveState.lastError || !driveGetToken()) ? "" : '<span class="dot dot-emerald"></span>';
+  var errStyle = (driveState.lastError || !driveGetToken())
+    ? 'style="color:hsl(var(--destructive))"'
+    : "";
+  var inner = '<div class="round">' + icon("cloud", 14, 1.8) + " Board cloud</div>" +
+    '<div class="live" ' + errStyle + ">" + dot + esc(sub) + "</div>";
+  if (isAdmin && (driveState.lastError || !driveGetToken())) {
+    inner += '<button class="nav-link" data-drive-connect style="margin-top:.25rem">' +
+      icon("cloud", 14, 1.8) + "<span>Reconnect Drive</span></button>";
+  }
+  if (isAdmin && driveGetToken() && !driveState.lastError) {
+    inner += '<button class="nav-link" data-drive-disconnect style="margin-top:.25rem;color:hsl(var(--destructive))">' +
+      icon("x", 14, 1.8) + "<span>Disconnect Drive</span></button>";
+  }
+  return '<div class="tonight-card">' +
+    '<div class="eyebrow">Board cloud</div>' + inner +
+    "</div>";
+}
+
+var ICON_PATHS = {
+  bar: '<path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/>',
+  book: '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>',
+  cal: '<rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4"/><path d="M8 2v4"/><path d="M3 10h18"/>',
+  chevron: '<path d="m9 18 6-6-6-6"/>',
+  cloud: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>',
+  clipboard: '<rect width="8" height="4" x="8" y="2" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="M12 11h4"/><path d="M12 16h4"/><path d="M8 11h.01"/><path d="M8 16h.01"/>',
+  copy: '<rect width="13" height="13" x="9" y="9" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>',
+  cross: '<circle cx="12" cy="12" r="10"/><path d="M22 12h-4"/><path d="M6 12H2"/><path d="M12 6V2"/><path d="M12 22v-4"/>',
+  db: '<ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/>',
+  edit: '<path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  ext: '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
+  file: '<path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/>',
+  gamepad: '<line x1="6" x2="10" y1="11" y2="11"/><line x1="8" x2="8" y1="9" y2="13"/><line x1="15" x2="15.01" y1="13" y2="13"/><line x1="18" x2="18.01" y1="11" y2="11"/><rect width="20" height="12" x="2" y="6" rx="2"/>',
+  gauge: '<path d="m12 14 4-4"/><path d="M3.34 19a10 10 0 1 1 17.32 0"/>',
+  layout: '<rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/>',
+  filter: '<path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/>',
+  menu: '<path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h16"/>',
+  moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  plus: '<path d="M5 12h14"/><path d="M12 5v14"/>',
+  radio: '<circle cx="12" cy="12" r="2"/><path d="M16.24 7.76a6 6 0 0 1 0 8.49"/><path d="M8.23 7.76a6 6 0 0 0 0 8.49"/><path d="M4.93 4.93c4.24-4.24 9.9-4.24 14.14 0"/><path d="M19.07 19.07c-4.24 4.24-9.9 4.24-14.14 0"/>',
+  refresh: '<path d="M3 12a9 9 0 0 1 15.36-6.36L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-15.36 6.36L3 16"/><path d="M3 21v-5h5"/>',
+  save: '<path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><path d="M17 21v-8H7v8"/><path d="M7 3v5h8"/>',
+  server: '<rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><line x1="6" x2="6.01" y1="6" y2="6"/><line x1="6" x2="6.01" y1="18" y2="18"/>',
+  settings: '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/>',
+  shield: '<path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/>',
+  sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/>',
+  swords: '<polyline points="14.5 17.5 3 6 3 3 6 3 17.5 14.5"/><line x1="13" x2="19" y1="19" y2="13"/><line x1="16" x2="20" y1="16" y2="20"/><line x1="19" x2="21" y1="21" y2="19"/><polyline points="14.5 6.5 18 3 21 3 21 6 17.5 9.5"/><line x1="5" x2="9" y1="14" y2="18"/><line x1="7" x2="4" y1="17" y2="20"/><line x1="3" x2="5" y1="19" y2="21"/>',
+  target: '<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  trash: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>',
+  trophy: '<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/>',
+  users: '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>'
+};
+
+function icon(name, size, strokeWidth) {
+  var sw = strokeWidth || 2;
+  return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="' + sw + '" stroke-linecap="round" stroke-linejoin="round">' + (ICON_PATHS[name] || "") + "</svg>";
+}
+
+function esc(value) {
+  return String(value == null ? "" : value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function customAlert(message, type) {
+  type = type || "info";
+  var iconMap = { info: "info", warn: "warning", danger: "trash" };
+  var svgIcon = icon(iconMap[type] || "info", 22);
+  var backdrop = document.createElement("div");
+  backdrop.className = "custom-modal-backdrop";
+  backdrop.innerHTML = '<div class="custom-modal">' +
+    '<div class="modal-icon ' + type + '">' + svgIcon + "</div>" +
+    "<h3>" + esc(message) + "</h3>" +
+    '<div class="modal-actions">' +
+      '<button class="btn-primary" data-modal-ok>Got it</button>' +
+    "</div>" +
+  "</div>";
+  document.body.appendChild(backdrop);
+  backdrop.querySelector("[data-modal-ok]").focus();
+  return new Promise(function (resolve) {
+    function close() { backdrop.remove(); resolve(); }
+    backdrop.querySelector("[data-modal-ok]").addEventListener("click", close);
+    backdrop.addEventListener("click", function (e) { if (e.target === backdrop) close(); });
+    backdrop.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === "Escape") close(); });
+  });
+}
+
+function customConfirm(message) {
+  var backdrop = document.createElement("div");
+  backdrop.className = "custom-modal-backdrop";
+  backdrop.innerHTML = '<div class="custom-modal">' +
+    '<div class="modal-icon warn">' + icon("shield", 22) + "</div>" +
+    "<h3>" + esc(message) + "</h3>" +
+    '<div class="modal-actions">' +
+      '<button class="btn-ghost" data-modal-cancel>Cancel</button>' +
+      '<button class="btn-primary" style="background:hsl(var(--destructive));border-color:hsl(var(--destructive))" data-modal-confirm>Confirm</button>' +
+    "</div>" +
+  "</div>";
+  document.body.appendChild(backdrop);
+  backdrop.querySelector("[data-modal-cancel]").focus();
+  return new Promise(function (resolve) {
+    function close(val) { backdrop.remove(); resolve(val); }
+    backdrop.querySelector("[data-modal-cancel]").addEventListener("click", function () { close(false); });
+    backdrop.querySelector("[data-modal-confirm]").addEventListener("click", function () { close(true); });
+    backdrop.addEventListener("click", function (e) { if (e.target === backdrop) close(false); });
+    backdrop.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") close(false);
+      if (e.key === "Enter") close(true);
+    });
+  });
+}
+
+function initCustomSelects() {
+  document.querySelectorAll(".custom-select-wrap").forEach(function (wrap) {
+    var trigger = wrap.querySelector(".custom-select-trigger");
+    var hidden = wrap.querySelector("input[type=hidden]");
+    var options = wrap.querySelectorAll(".custom-select-option");
+
+    function selectOption(opt) {
+      options.forEach(function (o) { o.classList.remove("selected"); });
+      opt.classList.add("selected");
+      trigger.querySelector(".select-label").textContent = opt.textContent;
+      if (hidden) {
+        hidden.value = opt.getAttribute("data-value");
+        hidden.dispatchEvent(new Event("change", { bubbles: true }));
+      }
+      wrap.classList.remove("open");
+    }
+
+    trigger.addEventListener("click", function (e) {
+      e.stopPropagation();
+      document.querySelectorAll(".custom-select-wrap.open").forEach(function (w) { w.classList.remove("open"); });
+      wrap.classList.toggle("open");
+    });
+
+    options.forEach(function (opt) {
+      opt.addEventListener("click", function () { selectOption(opt); });
+    });
+
+    var selected = wrap.querySelector(".custom-select-option.selected");
+    if (selected) {
+      trigger.querySelector(".select-label").textContent = selected.textContent;
+    }
+  });
+
+  document.addEventListener("click", function () {
+    document.querySelectorAll(".custom-select-wrap.open").forEach(function (w) { w.classList.remove("open"); });
+  });
+}
+
+function initials(value) {
+  return value
+    .split(/\s+/)
+    .map(function (v) { return v[0]; })
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+function fmtDate(value) {
+  if (!value) return "—";
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric", year: "numeric" }).format(new Date(value));
+}
+
+function fmtShortDate(value) {
+  if (!value) return "—";
+  return new Intl.DateTimeFormat("en-US", { month: "short", day: "numeric" }).format(new Date(value));
+}
+
+function avatarHtml(player, size) {
+  var name = (player && (player.universalName || player.realName)) || "??";
+  var color = (player && player.avatarColor) || "#f6b51c";
+  return '<span class="avatar ' + size + '" style="background:' + color + '">' + esc(initials(name)) + "</span>";
+}
+
+function matchBadgeHtml(type) {
+  return '<span class="match-badge ' + esc(type) + '">' + esc(type) + "</span>";
+}
+
+function logoHtml(compact) {
+  var cls = compact ? "h-5" : "h-7";
+  return '<a href="#/" class="brand" style="' + (compact ? "" : "margin-bottom:0;padding:0") + '">' +
+    '<img src="' + LOGO + '" class="' + cls + '" alt="Blockpost" />' +
+    '<span class="wordmark">Night<span class="accent">League</span></span>' +
+    "</a>";
+}
+
+function getRoute() {
+  var h = window.location.hash || "#/";
+  if (h === "#") h = "#/";
+  return h.slice(1) || "/";
+}
+
+var NAV_ITEMS = [
+  { href: "/dashboard", label: "Overview", icon: "layout" },
+  { href: "/matches", label: "Match history", icon: "swords" },
+  { href: "/players", label: "Players", icon: "users" },
+  { href: "/servers", label: "Servers", icon: "server" },
+  { href: "/timetable", label: "Timetable", icon: "cal" },
+  { href: "/agreement", label: "Agreement", icon: "book" }
+];
+
+function shellHtml(content, route) {
+  var isAdmin = state.role === "admin";
+  var nav = NAV_ITEMS.map(function (item) {
+    var active = route === item.href ? " active" : "";
+    return '<a href="#' + item.href + '" class="nav-link' + active + '" data-nav>' +
+      icon(item.icon, 16, 1.8) +
+      "<span>" + item.label + "</span>" +
+      (active ? '<span class="chevron">' + icon("chevron", 14, 2) + "</span>" : "") +
+      "</a>";
+  }).join("");
+
+  var adminLink = '<a href="#/admin" class="nav-link' + (route === "/admin" ? " active" : "") + '" data-nav>' +
+    icon("settings", 16, 1.8) + "<span>" + (isAdmin ? "Admin area" : "Admin access") + "</span>" +
+    (route === "/admin" ? '<span class="chevron">' + icon("chevron", 14, 2) + "</span>" : "") +
+    "</a>";
+
+  var roleBtn = '<button class="nav-link" data-role-switch>' +
+    icon("shield", 16, 1.8) + "<span>Switch to " + (isAdmin ? "spectator" : "admin") + "</span>" +
+    "</button>";
+
+  var sidebar = '<aside class="sidebar' + (state.menuOpen ? " open" : "") + '">' +
+    '<div class="brand">' +
+      '<img src="' + LOGO + '" alt="Blockpost" />' +
+      '<span class="wordmark">Night<span class="accent">League</span></span>' +
+    "</div>" +
+    '<div class="eyebrow">League room</div>' +
+    '<nav class="side-nav">' + nav + "</nav>" +
+    '<div class="sidebar-bottom">' +
+      '<div class="tonight-card">' +
+        '<div class="eyebrow">Tonight</div>' +
+        '<div class="round">Round 09</div>' +
+        '<div class="live"><span class="dot dot-emerald"></span>Live board</div>' +
+      "</div>" +
+      driveCardHtml() +
+      adminLink +
+      roleBtn +
+    "</div>" +
+  "</aside>";
+
+  var backdrop = state.menuOpen
+    ? '<button class="menu-backdrop" style="border:0;cursor:pointer" data-close-menu aria-label="Close menu"></button>'
+    : "";
+
+  var crumb = route === "/" ? "home" : route.replace("/", "").replace(/\?.*$/, "");
+
+  var topbar =
+    '<header class="topbar">' +
+      '<button class="btn-ghost btn-icon mobile-only" data-open-menu>' + icon("menu", 18) + "</button>" +
+      '<div class="crumb"><div class="eyebrow">Blockpost / ' + esc(crumb) + "</div></div>" +
+      '<div class="actions">' +
+        '<span class="mode-badge ' + (isAdmin ? "admin" : "spectator") + '">' +
+          '<span class="dot dot-current"></span>' + (isAdmin ? "Admin mode" : "Spectator mode") +
+        "</span>" +
+        '<button class="btn-ghost btn-icon" data-theme-toggle>' +
+          (state.dark ? icon("sun", 16) : icon("moon", 16)) +
+        "</button>" +
+      "</div>" +
+    "</header>";
+
+  return '<div class="app-shell">' + sidebar + backdrop +
+    '<main class="main-col">' + topbar +
+      '<div class="content">' + content + "</div>" +
+    "</main></div>";
+}
+
+function pageHeadHtml(eyebrow, title, description, action) {
+  return '<div class="page-head">' +
+    "<div>" +
+      '<div class="eyebrow">' + esc(eyebrow) + "</div>" +
+      "<h1>" + esc(title) + "</h1>" +
+      (description ? '<p class="desc">' + esc(description) + "</p>" : "") +
+    "</div>" +
+    (action ? "<div>" + action + "</div>" : "") +
+  "</div>";
+}
+function homeHtml() {
+  return '<div class="home-page">' +
+    '<div class="home-inner">' +
+      '<div class="home-topbar flex items-center justify-between">' +
+        '<a href="#/" class="flex items-center gap-2.5">' +
+          '<img src="' + LOGO + '" style="height:3rem;width:auto" alt="Blockpost" />' +
+          '<span style="font-family:\'Barlow Condensed\',sans-serif;font-size:2.1rem;font-weight:900;text-transform:uppercase;line-height:.9;letter-spacing:-.025em;color:hsl(var(--sidebar-foreground));display:block">Night<span style="color:hsl(var(--sidebar-primary))">League</span></span>' +
+        "</a>" +
+        '<span class="live-badge" style="display:inline-flex;align-items:center;gap:.5rem;border-radius:999px;padding:.4rem .9rem;font-family:var(--app-font-mono);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;background:hsl(3 72% 46% / .35);color:#4ade80;border:1px solid hsl(3 72% 53% / .5)"><span class="dot dot-emerald"></span><span class="live-full">Live Tonight · 4 Players Online</span><span class="live-short" style="display:none">Live Tonight</span></span>' +
+      "</div>" +
+      '<div class="home-grid" style="grid-template-columns:1fr;justify-items:center;text-align:center;">' +
+        '<div class="home-hero rise" style="margin-top:-1.5rem">' +
+          "<h1>Own the<br/><span style=\"color:hsl(var(--sidebar-primary))\">night</span></h1>" +
+          '<p class="mt-7" style="max-width:32rem;font-size:1rem;line-height:1.75rem;color:hsl(var(--sidebar-foreground) / .6)">' +
+            "Think your squad dominates the lobby? Prove it. Track every kill, every round, every choke — then come back and do it again." +
+          "</p>" +
+          '<div class="mt-9 flex flex-wrap gap-5 justify-center">' +
+            '<div style="text-align:center">' +
+              '<button class="btn-primary" data-go-scoreboard style="width:100%;background:hsl(var(--sidebar-primary));border-color:hsl(var(--sidebar-primary));box-shadow:0 0 16px hsl(var(--sidebar-primary) / .3);transition:all .25s ease" onmouseover="this.style.boxShadow=\'0 0 24px hsl(var(--sidebar-primary) / .55),0 0 48px hsl(var(--sidebar-primary) / .25)\';this.style.transform=\'translateY(-2px)\'" onmouseout="this.style.boxShadow=\'0 0 16px hsl(var(--sidebar-primary) / .3)\';this.style.transform=\'translateY(0)\'">' + icon("gauge", 16) + "Player Console</button>" +
+              '<div style="margin-top:.5rem;font-size:.7rem;color:hsl(var(--sidebar-foreground) / .4)">View matches, stats & leaderboard</div>' +
+            "</div>" +
+            '<div style="text-align:center">' +
+              '<button class="btn-ghost" data-go-admin style="background:hsl(193 86% 49% / .12);border:1px solid hsl(193 86% 49% / .5);color:#67e8f9;width:100%;font-weight:700;box-shadow:0 0 16px hsl(193 86% 49% / .2);transition:all .25s ease" onmouseover="this.style.boxShadow=\'0 0 28px hsl(193 86% 49% / .5),0 0 56px hsl(193 86% 49% / .2)\';this.style.background=\'hsl(193 86% 49% / .22)\';this.style.transform=\'translateY(-2px)\';this.style.color=\'#a5f3fc\'" onmouseout="this.style.boxShadow=\'0 0 16px hsl(193 86% 49% / .2)\';this.style.background=\'hsl(193 86% 49% / .12)\';this.style.transform=\'translateY(0)\';this.style.color=\'#67e8f9\'">' +
+                icon("shield", 16) + "Admin Console" +
+              "</button>" +
+              '<div style="margin-top:.5rem;font-size:.7rem;color:hsl(var(--sidebar-foreground) / .4)">Record results & manage roster</div>' +
+            "</div>" +
+          "</div>" +
+        "</div>" +
+      "</div>" +
+      '<div class="home-footer" style="border-top:1px solid hsl(var(--sidebar-foreground) / .1);padding-top:1.25rem;display:flex;justify-content:space-between;width:100%;font-size:.75rem;padding-left:2rem;padding-right:2rem">' +
+        '<span style="padding:.4rem 1rem;border-radius:999px;background:hsl(37 96% 54% / .15);color:#d97706">2 Gun Rounds</span>' +
+        '<span style="padding:.4rem 1rem;border-radius:999px;background:hsl(262 84% 63% / .15);color:#a78bfa">2 Knife Rounds</span>' +
+        '<span style="padding:.4rem 1rem;border-radius:999px;background:hsl(37 96% 54% / .15);color:#d97706">2 Sniper Rounds</span>' +
+      "</div>" +
+    "</div></div>";
+}
+function dashboardHtml() {
+  var trendMax = Math.max.apply(null, sampleSummary.dailyTrend.map(function (x) { return x.kills; }).concat([1]));
+
+  var stats = [
+    ["Matches logged", sampleSummary.totalMatches, "since launch"],
+    ["Total kills", sampleSummary.totalKills, "across all modes"],
+    ["Total deaths", sampleSummary.totalDeaths, "every round counts"],
+    ["Avg. kills / match", sampleSummary.averageKills.toFixed(1), "squad average"]
+  ].map(function (s, i) {
+    return '<div class="panel rise delay-' + (i + 1) + ' p-5">' +
+      '<div class="eyebrow">' + esc(s[0]) + "</div>" +
+      '<div class="mt-3 font-display text-5xl font-bold" style="letter-spacing:-.025em">' + s[1] + "</div>" +
+      '<div class="mt-2 text-xs text-muted-foreground">' + esc(s[2]) + "</div>" +
+    "</div>";
+  }).join("");
+
+  var trend = '<div class="chart">' +
+    sampleSummary.dailyTrend.map(function (point) {
+      var h = Math.max(10, (point.kills / trendMax) * 145);
+      return '<div class="col">' +
+        '<div class="bar-wrap" style="height:' + h + 'px">' +
+          '<div class="bar"></div>' +
+          '<span class="tip">' + point.kills + "</span>" +
+        "</div>" +
+        '<span class="label">' + fmtShortDate(point.date) + "</span>" +
+      "</div>";
+    }).join("") +
+  "</div>";
+
+  var teamSplit = sampleSummary.teamSummaries.map(function (team) {
+    var color = team.team === "alpha" ? "background:hsl(var(--primary))" : "background:hsl(var(--accent))";
+    return '<div class="stat-row" style="border-bottom:1px solid hsl(var(--border));padding:1.25rem">' +
+      '<span class="dot" style="width:12px;height:12px;border-radius:2px;' + color + '"></span>' +
+      '<div class="flex-1">' +
+        '<div class="font-display text-xl font-bold uppercase">' + esc(team.team) + "</div>" +
+        '<div class="text-xs text-muted-foreground">' + team.wins + " wins · " + team.losses + " losses</div>" +
+      "</div>" +
+      '<div class="text-right">' +
+        '<div class="font-mono-app text-xl">' + team.points + " pts</div>" +
+        '<div class="text-xs text-muted-foreground">' + team.winRate.toFixed(1) + "%</div>" +
+      "</div>" +
+    "</div>";
+  }).join("");
+
+  var sortedPlayers = sampleSummary.playerSummaries.slice().sort(function (a, b) { return b.kd - a.kd; });
+  var playerRows = sortedPlayers.map(function (player, i) {
+    var profile = data.players.find(function (p) { return p.id === player.playerId; });
+    var colorClass = i === 0 ? " text-accent-foreground" : "";
+    return '<div class="flex items-center gap-3 py-3" style="border-top:1px solid hsl(var(--border))">' +
+      avatarHtml(profile || { universalName: player.playerName }, "sm") +
+      '<div class="min-w-0 flex-1">' +
+        '<div class="truncate text-sm font-bold">' + esc(player.playerName) + "</div>" +
+        '<div class="mini text-muted-foreground">' + player.matches + " matches · " + player.kills + " kills</div>" +
+      "</div>" +
+      '<div class="text-right">' +
+        '<div class="font-mono-app text-sm' + colorClass + '">' + player.kd.toFixed(2) + " K/D</div>" +
+        '<div class="tiny text-muted-foreground">' + player.winRate.toFixed(1) + "% win rate</div>" +
+      "</div>" +
+    "</div>";
+  }).join("");
+
+  var recent = recentMatchesHtml(data.matches);
+
+  return pageHeadHtml(
+    "Night league / live board",
+    "The scoreboard",
+    "A quick read on the squad’s current form, recent rounds, and who is carrying the radio.",
+    '<a href="#/matches/new" class="btn-primary">' + icon("plus", 16) + "Record match</a>"
+  ) +
+  '<div class="dash-stats">' + stats + "</div>" +
+  '<div class="dash-mid">' +
+    '<section class="panel p-5" style="padding:1.5rem">' +
+      '<div class="flex items-center justify-between">' +
+        "<div>" +
+          '<div class="eyebrow">Seven day pulse</div>' +
+          '<h2 class="mt-1 font-display text-2xl font-bold uppercase">Kills in the dark</h2>' +
+        "</div>" +
+        '<span style="color:hsl(var(--primary))">' + icon("bar", 20) + "</span>" +
+      "</div>" +
+      trend +
+    "</section>" +
+    '<section class="panel overflow-hidden">' +
+      '<div class="border-b p-5">' +
+        '<div class="eyebrow">Team split</div>' +
+        '<h2 class="mt-1 font-display text-2xl font-bold uppercase">Alpha / Bravo</h2>' +
+      "</div>" +
+      teamSplit +
+    "</section>" +
+  "</div>" +
+  '<div class="dash-low">' +
+    '<section class="panel p-5">' +
+      '<div class="mb-4 flex items-center justify-between">' +
+        "<div>" +
+          '<div class="eyebrow">Individual readout</div>' +
+          '<h2 class="mt-1 font-display text-2xl font-bold uppercase">Player form</h2>' +
+        "</div>" +
+        '<a href="#/players" class="text-xs font-bold" style="color:hsl(var(--primary))">View roster</a>' +
+      "</div>" +
+      playerRows +
+    "</section>" +
+    recent +
+  "</div>";
+}
+
+function recentMatchesHtml(matches) {
+  var rows = matches.slice(0, 4).map(function (match) {
+    return '<a href="#/matches?focus=' + match.id + '" class="flex items-center gap-3 border-b p-4 hover-row transition-colors" style="border-bottom-color:hsl(var(--border))">' +
+      '<div class="w-20 shrink-0">' +
+        '<div class="micro font-mono-app text-muted-foreground">' + fmtDate(match.playedOn) + "</div>" +
+        '<div class="mt-1">' + matchBadgeHtml(match.matchType) + "</div>" +
+      "</div>" +
+      '<div class="min-w-0 flex-1">' +
+        '<div class="truncate text-sm font-bold">' + esc(match.server) + "</div>" +
+        '<div class="truncate text-xs text-muted-foreground">' + esc(match.note || "No notes added") + "</div>" +
+      "</div>" +
+      '<div class="font-display text-2xl font-bold">' +
+        '<span' + (match.alphaScore >= match.bravoScore ? ' style="color:hsl(var(--primary))"' : "") + ">" + match.alphaScore + "</span>" +
+        '<span class="mx-1" style="color:hsl(var(--muted-foreground) / .4)">—</span>' +
+        '<span' + (match.bravoScore >= match.alphaScore ? ' style="color:hsl(var(--accent-foreground))"' : "") + ">" + match.bravoScore + "</span>" +
+      "</div>" +
+      '<span class="text-muted-foreground">' + icon("chevron", 15) + "</span>" +
+    "</a>";
+  }).join("");
+
+  return '<section class="panel overflow-hidden">' +
+    '<div class="flex items-center justify-between border-b p-5">' +
+      "<div>" +
+        '<div class="eyebrow">Latest entries</div>' +
+        '<h2 class="mt-1 font-display text-2xl font-bold uppercase">Recent matches</h2>' +
+      "</div>" +
+      '<a href="#/matches" class="text-xs font-bold" style="color:hsl(var(--primary))">Full history</a>' +
+    "</div>" +
+    (matches.length === 0
+      ? '<div class="panel p-5 text-center" style="padding:4rem 1.25rem"><h2 class="font-display text-2xl font-bold uppercase">No rounds yet</h2>' +
+        '<p class="mt-2 text-sm text-muted-foreground">The board is waiting for its first result.</p></div>'
+      : rows) +
+  "</section>";
+}
+
+function matchesHtml() {
+  var params = new URLSearchParams((getRoute().split("?")[1] || ""));
+  var focus = params.get("focus");
+  var filterType = params.get("type") || "all";
+  var search = params.get("q") || "";
+  var filtered = data.matches.filter(function (m) {
+    return (filterType === "all" || m.matchType === filterType) &&
+      (m.server + " " + (m.note || "")).toLowerCase().indexOf(search.toLowerCase()) !== -1;
+  });
+
+  var filterBtns = ["all", "knife", "gun", "sniper"].map(function (item) {
+    var activeCls = filterType === item ? ' style="border-color:hsl(var(--primary));background:hsl(var(--primary) / .1);color:hsl(var(--primary))"' : "";
+    return '<a href="#/matches?' +
+      (item !== "all" ? "type=" + item : "") +
+      (search ? (item !== "all" ? "&" : "") + "q=" + encodeURIComponent(search) : "") +
+      '" class="btn-ghost" data-filter' + activeCls + ">" + item + "</a>";
+  }).join("");
+
+  var rows = filtered.map(function (match) {
+    var rowCls = focus && Number(focus) === match.id ? " hl-row" : "";
+    return '<div class="matchlist-row border-b p-4 last-border-0' + rowCls + '">' +
+      '<div class="micro font-mono-app text-muted-foreground">' + fmtDate(match.playedOn) + "</div>" +
+      "<div>" + matchBadgeHtml(match.matchType) + "</div>" +
+      '<div class="min-w-0">' +
+        '<div class="truncate text-sm font-bold">' + esc(match.server) + "</div>" +
+        '<div class="truncate text-xs text-muted-foreground">' + esc(match.note || "No notes added") + "</div>" +
+      "</div>" +
+      '<div class="font-display text-3xl font-bold">' +
+        '<span' + (match.alphaScore >= match.bravoScore ? ' style="color:hsl(var(--primary))"' : "") + ">" + match.alphaScore + "</span>" +
+        '<span class="mx-1" style="color:hsl(var(--muted-foreground) / .4)">—</span>' +
+        '<span' + (match.bravoScore >= match.alphaScore ? ' style="color:hsl(var(--accent-foreground))"' : "") + ">" + match.bravoScore + "</span>" +
+      "</div>" +
+      '<div class="flex gap-1">' +
+        '<a href="#/matches/new?id=' + match.id + '" class="btn-ghost btn-icon">' + icon("edit", 13) + "</a>" +
+        '<button class="btn-danger btn-icon" data-delete-match="' + match.id + '">' + icon("trash", 13) + "</button>" +
+      "</div>" +
+    "</div>";
+  }).join("");
+
+  var listBody;
+  if (filtered.length === 0) {
+    listBody = '<div class="panel flex flex-col items-center justify-center px-5 py-16 text-center">' +
+      '<div class="mb-3 rounded-xl p-3" style="background:hsl(var(--accent) / .2)">' + icon("cross", 22) + "</div>" +
+      '<h2 class="font-display text-2xl font-bold uppercase">No matches found</h2>' +
+      '<p class="mt-2 max-w-sm text-sm text-muted-foreground">Try another filter or record the first result of the night.</p>' +
+      '<a href="#/matches/new" class="btn-primary mt-5">' + icon("plus", 15) + "Record result</a>" +
+    "</div>";
+  } else {
+    listBody = '<div class="panel overflow-hidden">' +
+      '<div class="matchlist-head border-b px-5 py-3" style="background:hsl(var(--muted) / .4)">' +
+        '<span class="tiny font-bold uppercase tracking-wider text-muted-foreground">Date</span>' +
+        '<span class="tiny font-bold uppercase tracking-wider text-muted-foreground">Mode</span>' +
+        '<span class="tiny font-bold uppercase tracking-wider text-muted-foreground">Server / note</span>' +
+        '<span class="tiny font-bold uppercase tracking-wider text-muted-foreground">Score</span>' +
+        '<span class="tiny font-bold uppercase tracking-wider text-muted-foreground">Actions</span>' +
+      "</div>" +
+      rows +
+    "</div>";
+  }
+
+  return pageHeadHtml(
+    "Archive / every round",
+    "Match history",
+    "Receipts from the night shift. Filter by mode, inspect the scoreboard, or correct an entry.",
+    '<a href="#/matches/new" class="btn-primary">' + icon("plus", 16) + "New result</a>"
+  ) +
+  '<div class="mb-5 flex flex-col gap-3 sm-row">' +
+    '<div class="relative flex-1">' +
+      '<span class="absolute" style="left:.75rem;top:.75rem;color:hsl(var(--muted-foreground))">' + icon("filter", 15) + "</span>" +
+      '<input class="field" style="padding-left:2.25rem" placeholder="Search server or note..." value="' + esc(search) + '" data-match-search />' +
+    "</div>" +
+    '<div class="flex gap-2">' + filterBtns + "</div>" +
+  "</div>" +
+  listBody;
+}
+function matchFormHtml() {
+  var params = new URLSearchParams((getRoute().split("?")[1] || ""));
+  var editId = Number(params.get("id") || 0);
+  var editing = editId > 0;
+  var existing = data.matches.find(function (m) { return m.id === editId; });
+
+  if (editing && existing) {
+    var playerStats = {};
+    existing.players.forEach(function (p) { playerStats[p.playerId] = p; });
+  } else {
+    playerStats = {};
+  }
+
+  var dateVal = editing && existing ? existing.playedOn.slice(0, 10) : new Date().toISOString().slice(0, 10);
+  var typeVal = editing && existing ? existing.matchType : "gun";
+  var serverVal = editing && existing ? existing.server : "";
+  var alphaVal = editing && existing ? existing.alphaScore : 0;
+  var bravoVal = editing && existing ? existing.bravoScore : 0;
+  var noteVal = editing && existing ? (existing.note || "") : "";
+
+  var statsRows = data.players.map(function (player) {
+    var st = playerStats[player.id];
+    return '<div class="flex items-center gap-3 border-b p-4 last-border-0">' +
+      avatarHtml(player, "sm") +
+      '<div class="min-w-0 flex-1">' +
+        '<div class="text-sm font-bold">' + esc(player.universalName) + "</div>" +
+        '<div class="tiny uppercase text-muted-foreground">' + esc(player.team) + "</div>" +
+      "</div>" +
+      '<input type="number" min="0" class="field kd-input" placeholder="Kills" data-kills="' + player.id + '" value="' + (st ? st.kills : "") + '" />' +
+      '<input type="number" min="0" class="field kd-input" placeholder="Deaths" data-deaths="' + player.id + '" value="' + (st ? st.deaths : "") + '" />' +
+    "</div>";
+  }).join("");
+
+  return pageHeadHtml(
+    "Admin / result entry",
+    editing ? "Edit result" : "Record a match",
+    "Log the scoreboard exactly as it appeared. Stats are calculated into the shared board.",
+    ""
+  ) +
+  '<form class="form-grid" data-match-form>' +
+    '<section class="panel p-5" style="padding:1.75rem">' +
+      '<div class="grid grid-cols-2 gap-4" style="grid-template-columns:1fr 1fr">' +
+        "<label>" +
+          '<span class="field-label">Played on</span>' +
+          '<input type="date" class="field" data-field="playedOn" value="' + dateVal + '" required />' +
+        "</label>" +
+        "<label>" +
+          '<span class="field-label">Match type</span>' +
+          '<div class="custom-select-wrap" data-custom-select>' +
+            '<input type="hidden" data-field="matchType" value="' + typeVal + '" />' +
+            '<button type="button" class="custom-select-trigger">' +
+              '<span class="select-label">' + (typeVal === "knife" ? "Knife" : typeVal === "sniper" ? "Sniper" : "Gun") + '</span>' +
+              '<span class="select-chevron">' + icon("chevron", 14) + '</span>' +
+            '</button>' +
+            '<div class="custom-select-dropdown">' +
+              '<button type="button" class="custom-select-option' + (typeVal === "knife" ? " selected" : "") + '" data-value="knife">Knife</button>' +
+              '<button type="button" class="custom-select-option' + (typeVal === "gun" ? " selected" : "") + '" data-value="gun">Gun</button>' +
+              '<button type="button" class="custom-select-option' + (typeVal === "sniper" ? " selected" : "") + '" data-value="sniper">Sniper</button>' +
+            '</div>' +
+          '</div>' +
+        "</label>" +
+      "</div>" +
+      '<label class="mt-4 block">' +
+        '<span class="field-label">Server name</span>' +
+        '<input class="field" data-field="server" value="' + esc(serverVal) + '" required />' +
+      "</label>" +
+      '<div class="big-scores">' +
+        '<div class="score-box alpha">' +
+          '<div class="eyebrow alpha-tone">Alpha score</div>' +
+          '<input type="number" min="0" class="score-input" data-field="alphaScore" value="' + alphaVal + '" />' +
+        "</div>" +
+        '<div class="score-box bravo">' +
+          '<div class="eyebrow bravo-tone">Bravo score</div>' +
+          '<input type="number" min="0" class="score-input" data-field="bravoScore" value="' + bravoVal + '" />' +
+        "</div>" +
+      "</div>" +
+      '<label class="mt-5 block">' +
+        '<span class="field-label">Note <span class="font-bold" style="font-weight:400">(optional)</span></span>' +
+        '<textarea class="field min-h-28 resize-y" placeholder="What should the squad remember?" data-field="note" style="min-height:7rem">' + esc(noteVal) + "</textarea>" +
+      "</label>" +
+      '<div class="mt-6 flex flex-wrap justify-end gap-2">' +
+        '<a href="#/matches" class="btn-ghost">Cancel</a>' +
+        '<button type="submit" class="btn-primary">' + icon("save", 15) + (editing ? "Update result" : "Save result") + "</button>" +
+      "</div>" +
+    "</section>" +
+    '<section class="panel overflow-hidden">' +
+      '<div class="border-b p-5">' +
+        '<div class="eyebrow">Player readout</div>' +
+        '<h2 class="mt-1 font-display text-2xl font-bold uppercase">Kills & deaths</h2>' +
+      "</div>" +
+      statsRows +
+    "</section>" +
+  "</form>";
+}
+
+function playersHtml() {
+  var cards = data.players.map(function (p) {
+    var partner = data.players.find(function (x) { return x.id === p.universalPartnerId; });
+    return '<article class="panel rise p-5">' +
+      '<div class="flex items-start justify-between">' +
+        '<div class="flex items-center gap-3">' +
+          avatarHtml(p, "lg") +
+          "<div>" +
+            '<div class="font-display text-2xl font-bold uppercase">' + esc(p.universalName) + "</div>" +
+            '<div class="text-xs text-muted-foreground">' + esc(p.realName) + "</div>" +
+          "</div>" +
+        "</div>" +
+        '<button class="btn-ghost btn-icon" data-edit-player="' + p.id + '">' + icon("edit", 14) + "</button>" +
+      "</div>" +
+      '<div class="mt-5 grid grid-cols-2 gap-2">' +
+        '<div class="rounded-lg p-3' + (p.team === "alpha" ? "" : " bg-muted") + '" style="' + (p.team === "alpha" ? "background:hsl(var(--primary) / .1)" : "") + '">' +
+          '<div class="eyebrow">Team</div>' +
+          '<div class="mt-1 font-display text-xl font-bold uppercase">' + esc(p.team) + "</div>" +
+        "</div>" +
+        '<div class="rounded-lg bg-muted p-3">' +
+          '<div class="eyebrow">Blockpost ID</div>' +
+          '<div class="mt-1 truncate font-mono-app text-xs">' + esc(Object.values(p.serverNames)[0] || "Not set") + "</div>" +
+        "</div>" +
+      "</div>" +
+      '<div class="mt-4 flex items-center gap-2 border-t pt-4 text-xs text-muted-foreground">' +
+        icon("users", 14) +
+        "Universal teammate: <span class=\"font-semibold text-foreground\">" + (partner ? esc(partner.universalName) : "Unpaired") + "</span>" +
+      "</div>" +
+    "</article>";
+  }).join("");
+
+  return pageHeadHtml(
+    "Roster / universal teammates",
+    "The squad",
+    "One identity across every server. Pair the players who share a universal teammate relationship.",
+    '<button class="btn-primary" data-add-player>' + icon("plus", 16) + "Add player</button>"
+  ) +
+  '<div class="players-grid">' + cards + "</div>";
+}
+
+function serversHtml() {
+  var cards = serverList.map(function (server, i) {
+    var corner = i % 2 ? "alt" : "main";
+    return '<article class="panel relative overflow-hidden p-6">' +
+      '<div class="corner-badge ' + corner + '"></div>' +
+      '<div class="relative">' +
+        '<div class="flex items-start justify-between">' +
+          '<div class="rounded-xl bg-muted p-3" style="color:hsl(var(--primary))">' + icon("server", 22) + "</div>" +
+          '<span class="flex items-center gap-2 text-xs font-bold text-emerald-600"><span class="dot dot-current"></span>' + server.status + "</span>" +
+        "</div>" +
+        '<h2 class="mt-7 font-display text-2xl font-bold uppercase">' + esc(server.name) + "</h2>" +
+        '<p class="mt-1 text-sm text-muted-foreground">' + esc(server.region) + "</p>" +
+        '<div class="mt-6 flex items-center gap-2 rounded-lg border p-3 font-mono-app text-xs" style="border-color:hsl(var(--border));background:hsl(var(--muted) / .4);color:hsl(var(--muted-foreground))">' +
+          '<span class="min-w-0 flex-1 truncate">' + esc(server.url) + "</span>" +
+          '<button class="btn-ghost btn-icon-sm" data-copy-url="' + esc(server.url) + '">' + icon("copy", 13) + "</button>" +
+        "</div>" +
+        '<a class="btn-secondary mt-4 w-full" href="' + esc(server.url) + '" target="_blank" rel="noreferrer">' +
+          icon("ext", 15) + "Launch server" +
+        "</a>" +
+      "</div>" +
+    "</article>";
+  }).join("");
+
+  return pageHeadHtml(
+    "Launch desk / Blockpost web",
+    "Servers",
+    "Jump into one of the Blockpost hosts, then use the same server label when recording the match result.",
+    ""
+  ) +
+  '<div class="servers-grid">' + cards + "</div>" +
+  '<div class="panel mt-5 flex items-start gap-3 p-5">' +
+    '<span class="mt-0.5" style="color:hsl(var(--primary))">' + icon("radio", 18) + "</span>" +
+    "<div>" +
+      '<div class="font-bold">Launch protocol</div>' +
+      '<p class="mt-1 text-sm text-muted-foreground">Open any host above, choose the same one for the night, and record that host name with each result so comparisons stay clean.</p>' +
+    "</div>" +
+  "</div>";
+}
+
+function timetableHtml() {
+  var rows = timetableRows.map(function (row) {
+    var color = row.tone === "amber" ? "background:hsl(var(--accent))" : row.tone === "cyan" ? "background:hsl(var(--primary))" : "background:#a78bfa";
+    return '<div class="tt-grid items-center border-b px-5 py-5 last-border-0">' +
+      '<span class="micro font-mono-app text-muted-foreground">' + row.count + "</span>" +
+      '<div class="flex items-center gap-3">' +
+        '<span class="dot" style="width:12px;height:12px;border-radius:2px;' + color + '"></span>' +
+        '<span class="font-display text-2xl font-bold uppercase">' + row.mode + "</span>" +
+      "</div>" +
+      '<span class="text-xs text-muted-foreground">' + row.note + "</span>" +
+    "</div>";
+  }).join("");
+
+  var boxes = [
+    ["2", "knife rounds", "Start sharp"],
+    ["2", "gun rounds", "Earn the points"],
+    ["2", "sniper rounds", "Close the book"]
+  ].map(function (b) {
+    return '<div class="panel p-5">' +
+      '<div class="font-display text-5xl font-bold" style="color:hsl(var(--primary))">' + b[0] + "</div>" +
+      '<div class="mt-2 font-bold uppercase">' + b[1] + "</div>" +
+      '<div class="mt-1 text-xs text-muted-foreground">' + b[2] + "</div>" +
+    "</div>";
+  }).join("");
+
+  return pageHeadHtml(
+    "Schedule / six round protocol",
+    "Tonight's timetable",
+    "The default nightly rhythm. Six rounds, one shared lobby, no disappearing at halftime.",
+    ""
+  ) +
+  '<div class="panel overflow-hidden">' +
+    '<div class="tt-grid border-b px-5 py-3" style="background:hsl(var(--muted) / .4)">' +
+      '<span class="tiny font-bold uppercase tracking-widest text-muted-foreground">Round</span>' +
+      '<span class="tiny font-bold uppercase tracking-widest text-muted-foreground">Mode</span>' +
+      '<span class="tiny font-bold uppercase tracking-widest text-muted-foreground">Brief</span>' +
+    "</div>" +
+    rows +
+  "</div>" +
+  '<div class="mt-5 grid gap-4" style="grid-template-columns:1fr">' +
+    '<div style="display:grid;gap:1rem;grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">' + boxes + "</div>" +
+  "</div>";
+}
+
+function agreementHtml() {
+  var isEditing = routeState.editingAgreement;
+  var agreement = data.agreement;
+
+  if (isEditing) {
+    return pageHeadHtml(
+      "Shared doc / keep it human",
+      "The agreement",
+      "A small promise to the people on the other side of the scoreboard.",
+      '<button class="btn-ghost" data-toggle-agreement-edit>' + icon("x", 15) + "Cancel" + "</button>"
+    ) +
+    '<form class="panel max-w-3xl p-6" style="padding:2rem" data-agreement-form>' +
+      "<label>" +
+        '<span class="field-label">Title</span>' +
+        '<input class="field text-lg font-bold" value="' + esc(agreement.title) + '" data-agreement-title required />' +
+      "</label>" +
+      '<label class="mt-5 block">' +
+        '<span class="field-label">Agreement text</span>' +
+        '<textarea class="field min-h-360 resize-y leading-7" data-agreement-body required>' + esc(agreement.body) + "</textarea>" +
+      "</label>" +
+      '<button class="btn-primary mt-5">' + icon("save", 15) + "Save shared agreement" + "</button>" +
+    "</form>";
+  }
+
+  return pageHeadHtml(
+    "Shared doc / keep it human",
+    "The agreement",
+    "A small promise to the people on the other side of the scoreboard.",
+    '<button class="btn-primary" data-toggle-agreement-edit>' + icon("edit", 15) + "Edit agreement" + "</button>"
+  ) +
+  '<article class="panel tactical-grid relative overflow-hidden max-w-3xl p-7" style="padding:2rem 3rem">' +
+    '<div class="absolute" style="right:0;top:0;width:10rem;height:10rem;border-bottom-left-radius:999px;background:hsl(var(--accent) / .15)"></div>' +
+    '<div class="relative">' +
+      '<div class="mb-8" style="color:hsl(var(--primary))">' + icon("file", 25) + "</div>" +
+      '<h2 class="display-title max-w-xl font-bold" style="font-size:3rem;line-height:.92">' + esc(agreement.title) + "</h2>" +
+      '<div class="mt-8 whitespace-pre-wrap border-l-2 border-l-accent pl-5 text-base leading-7 text-muted-foreground" style="padding-left:1.25rem">' +
+        esc(agreement.body) +
+      "</div>" +
+      '<div class="mt-10 flex items-center gap-2 text-xs text-muted-foreground">' +
+        '<span class="dot dot-emerald"></span>Last updated ' + (agreement.updatedAt ? fmtDate(agreement.updatedAt) : "for tonight") +
+      "</div>" +
+    "</div>" +
+  "</article>";
+}
+
+function adminHtml() {
+  var cards = [
+    { href: "/matches/new", icon: "plus", title: "Record match", body: "Add a knife, gun, or sniper result." },
+    { href: "/players", icon: "users", title: "Manage roster", body: "Edit identities and teammate pairs." },
+    { href: "/agreement", icon: "book", title: "Update agreement", body: "Keep the shared promise current." }
+  ].map(function (c) {
+    return '<a href="#' + c.href + '" class="panel p-6 transition-colors hover-row" style="display:block">' +
+      '<div class="flex items-center justify-between">' +
+        '<div class="rounded-xl p-3" style="background:hsl(var(--accent) / .15);color:hsl(var(--accent-foreground))">' + icon(c.icon, 20) + "</div>" +
+        '<span class="text-muted-foreground">' + icon("chevron", 17) + "</span>" +
+      "</div>" +
+      '<h2 class="mt-8 font-display text-3xl font-bold uppercase">' + c.title + "</h2>" +
+      '<p class="mt-2 text-sm text-muted-foreground">' + c.body + "</p>" +
+    "</a>";
+  }).join("");
+
+  return pageHeadHtml(
+    "Control room / admin only",
+    "Admin area",
+    "Fast access to the league tools. Changes here are shared with every spectator on the board.",
+    ""
+  ) +
+  '<div class="admin-grid">' + cards + "</div>" +
+  '<div class="panel mt-5 p-6" style="border-color:hsl(var(--primary) / .2);background:hsl(var(--card));box-shadow:var(--shadow-card)">' +
+    '<div class="flex items-start gap-3">' +
+      '<span style="color:hsl(var(--primary))">' + icon("shield", 20) + "</span>" +
+      "<div>" +
+        '<div class="font-bold">You are editing the shared board</div>' +
+        '<p class="mt-1 text-sm text-muted-foreground">There is no private draft state. Save only when the whole squad is ready to see it.</p>' +
+      "</div>" +
+    "</div>" +
+    driveAdminCloudHtml() +
+  "</div>";
+}
+
+function driveAdminCloudHtml() {
+  var id = driveGetFileId();
+  if (!id) return "";
+  var link = "https://drive.google.com/file/d/" + encodeURIComponent(id) + "/view";
+  return '<div class="mt-4 flex items-center justify-between rounded-xl border p-3" style="border-color:hsl(var(--border))">' +
+    "<div>" +
+      '<div class="eyebrow">Public board link</div>' +
+      '<div class="mt-1 text-xs text-muted-foreground">' +
+        (driveState.connected
+          ? "Board is live on Drive. Copies to any spectator with this link."
+          : "Share this link so spectators can read the board.") +
+      "</div>" +
+    "</div>" +
+    '<button class="btn-ghost btn-icon" data-copy-url="' + esc(link) + '" title="Copy link">' +
+      icon("copy", 15) +
+    "</button>" +
+  "</div>";
+}
+
+function notFoundHtml() {
+  return '<div class="panel mx-auto max-w-xl p-12 text-center">' +
+    '<div class="eyebrow">404 / off the map</div>' +
+    '<h1 class="display-title mt-3 font-bold" style="font-size:3.75rem">Wrong server.</h1>' +
+    '<p class="mt-3 text-muted-foreground">This route does not exist in the league.</p>' +
+    '<a href="#/dashboard" class="btn-primary mt-6">Back to scoreboard</a>' +
+  "</div>";
+}
+var routeState = {
+  search: "",
+  filter: "all",
+  editingAgreement: false,
+  playerModal: null
+};
+
+function playerModalHtml() {
+  var modal = routeState.playerModal;
+  if (!modal) return "";
+  var editPlayer = null;
+  if (modal.editId) {
+    editPlayer = data.players.find(function (p) { return p.id === modal.editId; });
+  }
+  var v = modal.values;
+  var options = data.players
+    .filter(function (x) { return !editPlayer || x.id !== editPlayer.id; })
+    .map(function (x) {
+      return '<button type="button" class="custom-select-option' + (String(v.partnerId) === String(x.id) ? " selected" : "") + '" data-value="' + x.id + '">' +
+        esc(x.universalName) + " · " + esc(x.team) + "</button>";
+    })
+    .join("");
+
+  return '<div class="modal-backdrop" data-close-player-form>' +
+    '<form class="modal-card" data-player-form>' +
+      '<div class="mb-5 flex items-center justify-between">' +
+        "<div>" +
+          '<div class="eyebrow">' + (editPlayer ? "Edit identity" : "New identity") + "</div>" +
+          '<h2 class="font-display text-3xl font-bold uppercase">' + (editPlayer ? esc(editPlayer.universalName) : "Add player") + "</h2>" +
+        "</div>" +
+        '<button type="button" class="btn-ghost btn-icon" data-close-player-form>' + icon("x", 15) + "</button>" +
+      "</div>" +
+      '<div class="grid grid-cols-2 gap-4" style="grid-template-columns:1fr 1fr">' +
+        "<label>" +
+          '<span class="field-label">Real name</span>' +
+          '<input class="field" data-player-field="realName" value="' + esc(v.realName) + '" required />' +
+        "</label>" +
+        "<label>" +
+          '<span class="field-label">Universal name</span>' +
+          '<input class="field" data-player-field="universalName" value="' + esc(v.universalName) + '" required />' +
+        "</label>" +
+        "<label>" +
+          '<span class="field-label">Team</span>' +
+          '<div class="custom-select-wrap" data-custom-select>' +
+            '<input type="hidden" data-player-field="team" value="' + v.team + '" />' +
+            '<button type="button" class="custom-select-trigger">' +
+              '<span class="select-label">' + (v.team === "alpha" ? "Alpha" : "Bravo") + '</span>' +
+              '<span class="select-chevron">' + icon("chevron", 14) + '</span>' +
+            '</button>' +
+            '<div class="custom-select-dropdown">' +
+              '<button type="button" class="custom-select-option' + (v.team === "alpha" ? " selected" : "") + '" data-value="alpha">Alpha</button>' +
+              '<button type="button" class="custom-select-option' + (v.team === "bravo" ? " selected" : "") + '" data-value="bravo">Bravo</button>' +
+            '</div>' +
+          '</div>' +
+        "</label>" +
+        "<label>" +
+          '<span class="field-label">Server name</span>' +
+          '<input class="field" data-player-field="serverName" value="' + esc(v.serverName) + '" required />' +
+        "</label>" +
+      "</div>" +
+      '<label class="mt-4 block">' +
+        '<span class="field-label">Universal teammate</span>' +
+        '<div class="custom-select-wrap" data-custom-select>' +
+          '<input type="hidden" data-player-field="partnerId" value="' + v.partnerId + '" />' +
+          '<button type="button" class="custom-select-trigger">' +
+            '<span class="select-label">' + (v.partnerId ? (function() { var pp = data.players.find(function(x){ return String(x.id) === String(v.partnerId); }); return pp ? pp.universalName + " · " + pp.team : "Unpaired"; })() : "Unpaired") + '</span>' +
+            '<span class="select-chevron">' + icon("chevron", 14) + '</span>' +
+          '</button>' +
+          '<div class="custom-select-dropdown">' +
+            '<button type="button" class="custom-select-option' + (!v.partnerId ? " selected" : "") + '" data-value="">Unpaired</button>' +
+            options +
+          "</div>" +
+        "</div>" +
+      "</label>" +
+      '<div class="mt-6 flex justify-end gap-2">' +
+        '<button type="button" class="btn-ghost" data-close-player-form>Cancel</button>' +
+        '<button type="submit" class="btn-primary">' + icon("save", 15) + "Save identity</button>" +
+      "</div>" +
+    "</form>" +
+  "</div>";
+}
+
+function renderForRoute() {
+  var route = getRoute();
+  var page = route.split("?")[0];
+
+  var html;
+  if (page === "/") {
+    html = homeHtml();
+  } else {
+    var content;
+    switch (page) {
+      case "/dashboard": content = dashboardHtml(); break;
+      case "/matches": content = matchesHtml(); break;
+      case "/matches/new": content = matchFormHtml(); break;
+      case "/players": content = playersHtml(); break;
+      case "/servers": content = serversHtml(); break;
+      case "/timetable": content = timetableHtml(); break;
+      case "/agreement": content = agreementHtml(); break;
+      case "/admin": content = adminHtml(); break;
+      default: content = notFoundHtml();
+    }
+    html = shellHtml(content, page);
+    if (routeState.playerModal) {
+      html = html.replace("</main>", playerModalHtml() + "</main>");
+    }
+  }
+
+  document.getElementById("app").innerHTML = html;
+  document.documentElement.classList.toggle("dark", state.dark);
+  bindPage(route, page);
+  initCustomSelects();
+}
+
+function bindPage(route, page) {
+  if (page === "/matches") {
+    var input = document.querySelector("[data-match-search]");
+    if (input) {
+      input.focus();
+      input.value = routeState.search;
+      input.addEventListener("input", function () {
+        routeState.search = input.value;
+        rerenderKeepFocus(input);
+      });
+    }
+    var filters = document.querySelectorAll("[data-filter]");
+    filters.forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        routeState.filter = btn.textContent.trim();
+        renderForRoute();
+      });
+    });
+    var hl = document.querySelector(".hl-row");
+    if (hl) hl.scrollIntoView({ block: "center" });
+  }
+  if (page === "/matches/new") {
+    var fieldInputs = document.querySelectorAll("[data-kills], [data-deaths]");
+    fieldInputs.forEach(function (el) {
+      el.addEventListener("input", function () {});
+    });
+  }
+}
+
+function rerenderKeepFocus(input) {
+  var start = input.selectionStart;
+  renderForRoute();
+  var next = document.querySelector("[data-match-search]");
+  if (next) {
+    next.focus();
+    try { next.setSelectionRange(start, start); } catch (e) {}
+  }
+}
+
+document.addEventListener("click", function (e) {
+  var target = e.target;
+  var el = target.closest ? target : target.parentNode;
+
+  if (el.closest("[data-player-form]") && !el.closest("[data-close-player-form]")) return;
+
+  var goScore = el.closest("[data-go-scoreboard]");
+  if (goScore) {
+    state.role = "spectator";
+    localStorage.setItem(ROLE_KEY, state.role);
+    window.location.hash = "#/dashboard";
+    return;
+  }
+  var goAdmin = el.closest("[data-go-admin]");
+  if (goAdmin) {
+    if (driveGetToken() && driveGetFileId()) {
+      state.role = "admin";
+      localStorage.setItem(ROLE_KEY, state.role);
+      window.location.hash = "#/admin";
+    } else {
+      state.role = "admin";
+      localStorage.setItem(ROLE_KEY, state.role);
+      driveConnect().then(function () {
+        window.location.hash = "#/admin";
+      }).catch(function () {});
+    }
+    return;
+  }
+  if (el.closest("[data-open-menu]")) { state.menuOpen = true; renderForRoute(); return; }
+  if (el.closest("[data-close-menu]")) { state.menuOpen = false; renderForRoute(); return; }
+  if (el.closest("[data-theme-toggle]")) {
+    state.dark = !state.dark;
+    document.documentElement.classList.toggle("dark", state.dark);
+    localStorage.setItem(THEME_KEY, state.dark ? "dark" : "light");
+    renderForRoute();
+    return;
+  }
+  if (el.closest("[data-role-switch]")) {
+    state.role = state.role === "admin" ? "spectator" : "admin";
+    localStorage.setItem(ROLE_KEY, state.role);
+    renderForRoute();
+    return;
+  }
+  if (el.closest("[data-drive-connect]")) {
+    driveConnect();
+    return;
+  }
+  if (el.closest("[data-drive-disconnect]")) {
+    driveDisconnect();
+    return;
+  }
+  if (el.closest("[data-delete-match]")) {
+    var delBtn = el.closest("[data-delete-match]");
+    var matchId = Number(delBtn.getAttribute("data-delete-match"));
+    customConfirm("Delete this match from the shared board?").then(function (yes) {
+      if (yes) {
+        data.matches = data.matches.filter(function (m) { return m.id !== matchId; });
+        saveData();
+        renderForRoute();
+      }
+    });
+    return;
+  }
+  if (el.closest("[data-copy-url]")) {
+    var copyBtn = el.closest("[data-copy-url]");
+    var url = copyBtn.getAttribute("data-copy-url");
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function () {
+        copyBtn.innerHTML = icon("clipboard", 13);
+        setTimeout(function () { copyBtn.innerHTML = icon("copy", 13); }, 1200);
+      }).catch(function () {});
+    }
+    return;
+  }
+  if (el.closest("[data-add-player]")) {
+    routeState.playerModal = {
+      editId: 0,
+      values: { realName: "", universalName: "", team: "alpha", serverName: "", partnerId: "" }
+    };
+    renderForRoute();
+    return;
+  }
+  if (el.closest("[data-edit-player]")) {
+    var editBtn = el.closest("[data-edit-player]");
+    var playerId = Number(editBtn.getAttribute("data-edit-player"));
+    var player = data.players.find(function (p) { return p.id === playerId; });
+    if (player) {
+      routeState.playerModal = {
+        editId: player.id,
+        values: {
+          realName: player.realName,
+          universalName: player.universalName,
+          team: player.team,
+          serverName: Object.values(player.serverNames)[0] || "",
+          partnerId: player.universalPartnerId ? String(player.universalPartnerId) : ""
+        }
+      };
+      renderForRoute();
+    }
+    return;
+  }
+  if (el.closest("[data-close-player-form]")) {
+    routeState.playerModal = null;
+    renderForRoute();
+    return;
+  }
+  if (el.closest("[data-toggle-agreement-edit]")) {
+    routeState.editingAgreement = !routeState.editingAgreement;
+    renderForRoute();
+    return;
+  }
+  var demoFilter = el.closest("[data-nav]");
+  if (demoFilter) {
+    state.menuOpen = false;
+  }
+});
+
+document.addEventListener("change", function (e) {
+  var el = e.target;
+  if (el.matches && el.matches("[data-player-field]")) {
+    if (!routeState.playerModal) return;
+    var field = el.getAttribute("data-player-field");
+    routeState.playerModal.values[field] = el.value;
+  }
+});
+
+document.addEventListener("submit", function (e) {
+  var form = e.target;
+  if (form.matches && form.matches("[data-match-form]")) {
+    e.preventDefault();
+    var get = function (name) {
+      var el = form.querySelector("[data-field=\"" + name + "\"]");
+      return el ? el.value : "";
+    };
+    var kills = {};
+    var deaths = {};
+    form.querySelectorAll("[data-kills]").forEach(function (el) { kills[el.getAttribute("data-kills")] = el.value; });
+    form.querySelectorAll("[data-deaths]").forEach(function (el) { deaths[el.getAttribute("data-deaths")] = el.value; });
+
+    var matchPlayers = data.players.map(function (p) {
+      var k = Number(kills[p.id] || 0);
+      var d = Number(deaths[p.id] || 0);
+      var kd = d ? Number((k / d).toFixed(2)) : k;
+      return {
+        playerId: p.id,
+        playerName: p.universalName,
+        team: p.team,
+        kills: k,
+        deaths: d,
+        kd: kd
+      };
+    });
+
+    var params = new URLSearchParams((getRoute().split("?")[1] || ""));
+    var editId = Number(params.get("id") || 0);
+    var payload = {
+      playedOn: get("playedOn"),
+      matchType: get("matchType"),
+      server: get("server"),
+      alphaScore: Number(get("alphaScore") || 0),
+      bravoScore: Number(get("bravoScore") || 0),
+      note: get("note") || null,
+      players: matchPlayers
+    };
+
+    if (editId > 0) {
+      var idx = data.matches.findIndex(function (m) { return m.id === editId; });
+      if (idx !== -1) {
+        data.matches[idx] = Object.assign({}, data.matches[idx], payload);
+      }
+    } else {
+      var mid = data.matches.reduce(function (acc, m) { return Math.max(acc, m.id); }, 0) + 1;
+      data.matches.unshift(Object.assign({ id: mid }, payload));
+    }
+    saveData();
+    routeState.search = "";
+    routeState.filter = "all";
+    window.location.hash = "#/matches";
+    return;
+  }
+  if (form.matches && form.matches("[data-player-form]")) {
+    e.preventDefault();
+    var v = routeState.playerModal.values;
+    if (!v.realName || !v.universalName || !v.serverName) return;
+    if (routeState.playerModal.editId && routeState.playerModal.editId > 0) {
+      var pidx = data.players.findIndex(function (p) { return p.id === routeState.playerModal.editId; });
+      if (pidx !== -1) {
+        data.players[pidx] = {
+          id: data.players[pidx].id,
+          realName: v.realName,
+          universalName: v.universalName,
+          team: v.team,
+          serverNames: { blockpost: v.serverName },
+          universalPartnerId: v.partnerId ? Number(v.partnerId) : null,
+          avatarColor: data.players[pidx].avatarColor || "#19b7d9"
+        };
+      }
+    } else {
+      var nid = data.players.reduce(function (acc, p) { return Math.max(acc, p.id); }, 0) + 1;
+      data.players.push({
+        id: nid,
+        realName: v.realName,
+        universalName: v.universalName,
+        team: v.team,
+        serverNames: { blockpost: v.serverName },
+        universalPartnerId: v.partnerId ? Number(v.partnerId) : null,
+        avatarColor: "#19b7d9"
+      });
+    }
+    saveData();
+    routeState.playerModal = null;
+    renderForRoute();
+    return;
+  }
+  if (form.matches && form.matches("[data-agreement-form]")) {
+    e.preventDefault();
+    var titleEl = form.querySelector("[data-agreement-title]");
+    var bodyEl = form.querySelector("[data-agreement-body]");
+    data.agreement = {
+      title: titleEl.value,
+      body: bodyEl.value,
+      updatedAt: new Date().toISOString()
+    };
+    saveData();
+    routeState.editingAgreement = false;
+    renderForRoute();
+  }
+});
+
+window.addEventListener("hashchange", function () {
+  routeState.search = "";
+  routeState.filter = "all";
+  routeState.editingAgreement = false;
+  routeState.playerModal = null;
+  state.menuOpen = false;
+  renderForRoute();
+});
+
+document.documentElement.classList.toggle("dark", state.dark);
+renderForRoute();
+initCustomSelects();
+
+function driveAutoPull() {
+  if (state.role === "admin") return;
+  var fileId = driveGetFileId();
+  if (!fileId) return;
+  drivePull().then(function (r) {
+    if (r && r.lastUpdated) {
+      var local = data.lastUpdated ? String(data.lastUpdated) : "";
+      if (!local || String(r.lastUpdated) > local) {
+        data = r;
+        try { localStorage.setItem(DATA_KEY, JSON.stringify(data)); } catch (e) {}
+        renderForRoute();
+      }
+    }
+  }).catch(function () {});
+}
+
+setInterval(driveAutoPull, 15000);
+
+document.addEventListener("visibilitychange", function () {
+  if (!document.hidden) driveAutoPull();
+});
+
+function initGapi() {
+  if (window.gapi && gapi.load) {
+    gapi.load("client", function () {
+      gapi.client.init({ apiKey: DRIVE_API_KEY, discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/drive/v3/rest"] })
+        .then(function () { driveBoot(); })
+        .catch(function () { driveBoot(); });
+    });
+  } else {
+    setTimeout(initGapi, 500);
+  }
+}
+initGapi();
+})();
+</script>
+</body>
+</html>
